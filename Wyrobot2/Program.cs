@@ -9,7 +9,6 @@ using DSharpPlus.Interactivity.Extensions;
 using Microsoft.Extensions.Logging;
 using Wyrobot2.Commands;
 using Wyrobot2.Data;
-using Wyrobot2.Data.Models;
 using Wyrobot2.Events;
 
 namespace Wyrobot2
@@ -72,7 +71,7 @@ namespace Wyrobot2
             if (gld == null)
                 return Task.FromResult(-1);
 
-            var data = DataManager<GuildData>.GetData(new GuildData(), gld.Id.ToString());
+            var data = DataManager.GetData(gld);
 
             return msg.Content.StartsWith(data.Prefix, StringComparison.InvariantCultureIgnoreCase) ? Task.FromResult(data.Prefix.Length) : Task.FromResult(-1);
         }
