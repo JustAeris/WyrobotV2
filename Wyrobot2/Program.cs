@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.CommandsNext.Exceptions;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Enums;
@@ -13,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Wyrobot2.Commands;
 using Wyrobot2.Data;
 using Wyrobot2.Data.Models;
+using Wyrobot2.Events;
 
 namespace Wyrobot2
 {
@@ -39,15 +37,14 @@ namespace Wyrobot2
                 Intents = DiscordIntents.All
             });
 
-            _client.GuildCreated += (_, args) =>
+            _client.UseInteractivity(new InteractivityConfiguration
             {
-                DataManager<GuildData>.SaveData(new GuildData
-                {
-                    Id = args.Guild.Id
-                });
-                return Task.CompletedTask;
-            };
+                PollBehaviour = PollBehaviour.KeepEmojis,
+                Timeout = TimeSpan.FromSeconds(30)
+            });
             
+            _client.RegisterEvents();
+
             var commands = _client.UseCommandsNext(new CommandsNextConfiguration
             {
                 StringPrefixes = new[] {"wyrobot!"},
@@ -55,67 +52,10 @@ namespace Wyrobot2
                 EnableMentionPrefix = false,
                 PrefixResolver = ResolvePrefixAsync
             });
-
-            commands.CommandExecuted += (_, e) =>
-            {
-                e.Context.Client.Logger.LogInformation(
-                    // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                    $"User '{e.Context.User.Username}#{e.Context.User.Discriminator}' ({e.Context.User.Id}) executed '{e.Command.QualifiedName}' in #{e.Context.Channel.Name} ({e.Context.Channel.Id})",
-                    DateTime.Now);
-                return Task.CompletedTask;
-            };
-
-            commands.CommandErrored += async (_, e) =>
-            {
-                e.Context.Client.Logger.LogError(
-                    // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                    $"User '{e.Context.User.Username}#{e.Context.User.Discriminator}' ({e.Context.User.Id}) tried to execute '{e.Command?.QualifiedName ?? "<unknown command>"}' "
-                    + $"in #{e.Context.Channel.Name} ({e.Context.Channel.Id}) and failed with {e.Exception.GetType()}: {e.Exception.Message}",
-                    DateTime.Now);
-                DiscordEmbedBuilder embed = null;
-
-                var ex = e.Exception;
-                while (ex is AggregateException)
-                    ex = ex.InnerException;
-
-                switch (ex)
-                {
-                    case CommandNotFoundException:
-                        break; // ignore
-                    case ChecksFailedException cfe:
-                    {
-                        if (!cfe.FailedChecks.Any(x => x is RequirePrefixesAttribute))
-                            embed = new DiscordEmbedBuilder
-                            {
-                                Title = "Permission denied",
-                                Description =
-                                    $"{DiscordEmoji.FromName(e.Context.Client, ":raised_hand:")} You lack permissions necessary to run this command.",
-                                Color = new DiscordColor(0xFF0000)
-                            };
-                        break;
-                    }
-                    default:
-                        embed = new DiscordEmbedBuilder
-                        {
-                            Title = "A problem occured while executing the command",
-                            Description =
-                                $"{Formatter.InlineCode(e.Command?.QualifiedName)} threw an exception: `{ex?.GetType()}: {ex?.Message}`",
-                            Color = new DiscordColor(0xFF0000)
-                        };
-                        break;
-                }
-
-                if (embed != null)
-                    await e.Context.RespondAsync("", embed: embed.Build());
-            };
             
-            commands.RegisterCommands<SettingsCommands>();
+            commands.RegisterEvents();
 
-            _client.UseInteractivity(new InteractivityConfiguration
-            {
-                PollBehaviour = PollBehaviour.KeepEmojis,
-                Timeout = TimeSpan.FromSeconds(30)
-            });
+            commands.RegisterCommands<SettingsCommands>();
             
             await _client.ConnectAsync(new DiscordActivity
             {
