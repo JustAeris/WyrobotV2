@@ -49,7 +49,7 @@ namespace Wyrobot2
             
             var commands = _client.UseCommandsNext(new CommandsNextConfiguration
             {
-                StringPrefixes = new[] {"w!"},
+                StringPrefixes = new[] {"wyrobot!"},
                 IgnoreExtraArguments = true,
                 EnableMentionPrefix = false,
                 PrefixResolver = ResolvePrefixAsync
