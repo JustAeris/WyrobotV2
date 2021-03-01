@@ -11,10 +11,16 @@ namespace Wyrobot2.Events
         {
             client.GuildCreated += (_, args) =>
             {
-                DataManager<GuildData>.SaveData(new GuildData
+                DataManager.SaveData(new GuildData
                 {
                     Id = args.Guild.Id
                 });
+                return Task.CompletedTask;
+            };
+
+            client.GuildDeleted += (_, args) =>
+            {
+                DataManager.DeleteData(args.Guild);
                 return Task.CompletedTask;
             };
         }
