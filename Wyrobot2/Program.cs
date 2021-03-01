@@ -88,7 +88,7 @@ namespace Wyrobot2
                             {
                                 Title = "Permission denied",
                                 Description =
-                                    $"{DiscordEmoji.FromName(e.Context.Client, ":msraisedhand:")} You lack permissions necessary to run this command.",
+                                    $"{DiscordEmoji.FromName(e.Context.Client, ":raised_hand:")} You lack permissions necessary to run this command.",
                                 Color = new DiscordColor(0xFF0000)
                             };
                         break;
