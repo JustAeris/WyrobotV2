@@ -1,20 +1,16 @@
 ﻿using System.IO;
 using System.Text;
+using DSharpPlus.Entities;
 using Newtonsoft.Json;
 using Wyrobot2.Data.Models;
 
 namespace Wyrobot2.Data
 {
-    public static class DataManager<T> where T : IDataManager
+    public static class DataManager
     {
-        public static T GetData(T t, string id, string guildId = null)
+        private static T GetData<T>(ulong id, ulong guildId = 123456789) where T : IDataManager
         {
-            var path = t switch
-            {
-                GuildData => $"guilds/{id}/settings.json",
-                UserData => $"guilds/{guildId}/users/{id}.json",
-                _ => ""
-            };
+            var path = guildId != 123456789 ? $"guilds/{guildId}/users/{id}.json" : $"guilds/{id}/settings.json";
 
             if (!File.Exists(path))
                 return default;
@@ -23,18 +19,22 @@ namespace Wyrobot2.Data
             return JsonConvert.DeserializeObject<T>(content);
         }
 
-        public static void SaveData(T t)
-        {
-            var path = $"{t.Folder}/{t.Identifier}.json";
+        public static GuildData GetData(DiscordGuild gld) => GetData<GuildData>(gld.Id);
 
-            if (!Directory.Exists(t.Folder)) Directory.CreateDirectory(t.Folder);
+        public static UserData GetData(DiscordUser user, DiscordGuild gld) => GetData<UserData>(user.Id, gld.Id);
+        
+        public static void SaveData<T>(T obj) where T : IDataManager
+        {
+            var path = $"{obj.Folder}/{obj.Identifier}.json";
+
+            if (!Directory.Exists(obj.Folder)) Directory.CreateDirectory(obj.Folder);
             if (!File.Exists(path))
             {
                 var fs = File.Create(path);
                 fs.Dispose();
             }
 
-            var json = JsonConvert.SerializeObject(t, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(obj, Formatting.Indented);
 
             using var f =
                 new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite)
@@ -44,5 +44,20 @@ namespace Wyrobot2.Data
 
             f.Write(Encoding.UTF8.GetBytes(json));
         }
+        
+        private static void DeleteData(ulong id, ulong guildId = 123456789)
+        {
+            var path = guildId != 123456789 ? $"guilds/{guildId}/users/{id}.json" : $"guilds/{id}/";
+
+            if (!File.Exists(path))
+                return;
+
+            if (guildId != 123456789) File.Delete(path);
+            else Directory.Delete(path, true);
+        }
+
+        public static void DeleteData(DiscordGuild gld) => DeleteData(gld.Id);
+
+        public static void DeleteData(DiscordUser user, DiscordGuild gld) => DeleteData(user.Id, gld.Id);
     }
 }
