@@ -21,6 +21,9 @@
       <Compile Update="Data\Models\MusicTrack.cs">
         <DependentUpon>MusicData.cs</DependentUpon>
       </Compile>
+      <Compile Update="Data\Models\LevelReward.cs">
+        <DependentUpon>GuildData.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
