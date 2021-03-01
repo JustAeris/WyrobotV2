@@ -16,7 +16,12 @@ namespace Wyrobot2.Data.Models
             Moderation = new ModerationSettings();
             Welcome = new WelcomeSettings();
             Logging = new LoggingSettings();
-            Leveling = new LevelingSettings();
+            Leveling = new LevelingSettings
+            {
+                Enabled = true,
+                Message = "Woo! {user} leveled up to {level}! :tada:",
+                Multiplier = 1
+            };
             Other = new OtherSettings();
             Moderation.ModerationRoles = new List<ulong>();
             Moderation.BannedWords = new List<string>();
