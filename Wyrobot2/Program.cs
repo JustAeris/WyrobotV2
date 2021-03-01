@@ -38,7 +38,15 @@ namespace Wyrobot2
                 Intents = DiscordIntents.All
             });
 
-
+            _client.GuildCreated += (_, args) =>
+            {
+                DataManager<GuildData>.SaveData(new GuildData
+                {
+                    Id = args.Guild.Id
+                });
+                return Task.CompletedTask;
+            };
+            
             var commands = _client.UseCommandsNext(new CommandsNextConfiguration
             {
                 StringPrefixes = new[] {"w!"},
