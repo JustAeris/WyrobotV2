@@ -7,8 +7,8 @@ namespace Wyrobot2.Data
     {
         static Configuration()
         {
-            if (!File.Exists("config.json"))
-                return;
+            if (!File.Exists("appsettings.json"))
+                throw new FileNotFoundException("Settings file has not been found", "appsettings.json");
 
             var json = JObject.Parse(File.ReadAllText("appsettings.json"));
 
