@@ -10,6 +10,7 @@ using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Enums;
 using DSharpPlus.Interactivity.Extensions;
 using Microsoft.Extensions.Logging;
+using Wyrobot2.Commands;
 using Wyrobot2.Data;
 using Wyrobot2.Data.Models;
 
@@ -107,6 +108,8 @@ namespace Wyrobot2
                 if (embed != null)
                     await e.Context.RespondAsync("", embed: embed.Build());
             };
+            
+            commands.RegisterCommands<SettingsCommands>();
 
             _client.UseInteractivity(new InteractivityConfiguration
             {
