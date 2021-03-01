@@ -20,7 +20,8 @@ namespace Wyrobot2.Data.Models
             {
                 Enabled = true,
                 Message = "Woo! {user} leveled up to {level}! :tada:",
-                Multiplier = 1
+                Multiplier = 1,
+                LevelRewards = new List<LevelReward>()
             };
             Other = new OtherSettings();
             Moderation.ModerationRoles = new List<ulong>();
@@ -69,6 +70,7 @@ namespace Wyrobot2.Data.Models
             public bool Enabled { get; set; }
             public float Multiplier { get; set; }
             public string Message { get; set; }
+            public ICollection<LevelReward> LevelRewards { get; set; }
         }
 
         public class OtherSettings
