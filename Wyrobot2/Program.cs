@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
+using DSharpPlus.CommandsNext.Converters;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Enums;
@@ -53,8 +54,12 @@ namespace Wyrobot2
             });
             
             commands.RegisterEvents();
+            commands.RegisterConverter(new BoolConverter());
+            commands.SetHelpFormatter<CustomHelpFormatter>();
 
             commands.RegisterCommands<SettingsCommands>();
+            commands.RegisterCommands<LevelingCommands>();
+            commands.RegisterCommands<LevelingSettingsCommands>();
             
             await _client.ConnectAsync(new DiscordActivity
             {
