@@ -66,7 +66,7 @@ namespace Wyrobot2.Commands
                 if (dataList[i].Xp == 0) continue;
                 var member = await ctx.Guild.GetMemberAsync(dataList[i].Id);
                 sb.AppendLine($"{i + 1}. " + member.Username + "#" + member.Discriminator + $" with a level of **{dataList[i].Level}** " +
-                              $"and **{dataList[i].Xp}**/{dataList[i].XpToNextLevel}. " +
+                              $"and **{dataList[i].Xp}**/{dataList[i].XpToNextLevel} XP. " +
                               $"{i switch { 0 => ":first_place:", 1 => ":second_place:", 2 => ":third_place:", _ => null }}");
             }
 
