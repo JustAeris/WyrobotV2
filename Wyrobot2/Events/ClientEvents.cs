@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -32,7 +33,7 @@ namespace Wyrobot2.Events
                 if (args.Author.IsBot) return;
                 var gldData = DataManager.GetData(args.Guild);
                 
-                // LEVELING BEGIN
+                // ----- LEVELING BEGIN -----
                 if (gldData.Leveling.Enabled)
                 {
                     var usrData = DataManager.GetData(args.Author, args.Guild) ?? new UserData
@@ -57,6 +58,12 @@ namespace Wyrobot2.Events
                             if (reward.RequiredLevel > usrData.Level) continue;
                             var mbr = (DiscordMember) args.Author;
                             var role = args.Guild.GetRole(reward.RoleId);
+                            if (mbr.Roles.Contains(role))
+                            {
+                                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
+                                sender.Logger.LogError($"{mbr.Username} has already the reward. Silently skipping the error");
+                                return;
+                            }
                             try
                             {
                                 await mbr.GrantRoleAsync(role);
@@ -82,7 +89,7 @@ namespace Wyrobot2.Events
                     
                     DataManager.SaveData(usrData);
                 }
-                // LEVELING END
+                // ----- LEVELING END -----
             };
         }
     }
