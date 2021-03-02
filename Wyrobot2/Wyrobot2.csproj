@@ -27,6 +27,9 @@
       <Compile Update="Commands\LevelingSettingsCommands.cs">
         <DependentUpon>LevelingCommands.cs</DependentUpon>
       </Compile>
+      <Compile Update="Commands\LevelRewardsSettingsCommands.cs">
+        <DependentUpon>LevelingCommands.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
