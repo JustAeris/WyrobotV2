@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using Newtonsoft.Json;
 
 namespace Wyrobot2.Data.Models
@@ -22,7 +23,7 @@ namespace Wyrobot2.Data.Models
 
         public bool IsPermanent { get; set; }
 
-        public string Reason { get; set; }
+        public string? Reason { get; set; }
         
         public enum SanctionType
         {
