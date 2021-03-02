@@ -5,6 +5,11 @@ namespace Wyrobot2.Data.Models
 {
     public class UserData : IDataManager
     {
+        public UserData()
+        {
+            Sanctions = new List<Sanction>();
+        }
+        
         public ulong Id { get; init; }
 
         public ulong GuildId { get; init; }
