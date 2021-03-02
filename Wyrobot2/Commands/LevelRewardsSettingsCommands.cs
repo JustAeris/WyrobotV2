@@ -18,8 +18,8 @@ namespace Wyrobot2.Commands
     // ReSharper disable once ClassNeverInstantiated.Global
     public class LevelRewardsSettingsCommands : BaseCommandModule
     {
-        [Command("add")]
-        public async Task Add(CommandContext ctx, int requiredLevel, DiscordRole role)
+        [Command("add"), Description("Adds a level reward to this guild.")]
+        public async Task Add(CommandContext ctx, [Description("Required level to give the reward.")] int requiredLevel, [Description("Role to award.")] DiscordRole role)
         {
             var data = DataManager.GetData(ctx.Guild);
             data.Leveling.LevelRewards ??= new List<LevelReward>();
@@ -36,8 +36,8 @@ namespace Wyrobot2.Commands
                 .WithTimestamp(DateTime.UtcNow));
         }
         
-        [Command("remove"), Aliases("del")]
-        public async Task Remove(CommandContext ctx, int requiredLevel, DiscordRole role)
+        [Command("remove"), Aliases("del"), Description("Removes a level reward from this guild.")]
+        public async Task Remove(CommandContext ctx, [Description("Required level of the reward to remove.")] int requiredLevel, [Description("Role of the reward to remove.")] DiscordRole role)
         {
             var data = DataManager.GetData(ctx.Guild);
             data.Leveling.LevelRewards ??= new List<LevelReward>();
@@ -54,7 +54,7 @@ namespace Wyrobot2.Commands
                 .WithTimestamp(DateTime.UtcNow));
         }
         
-        [Command("list")]
+        [Command("list"), Description("Lists all available level rewards for this guild.")]
         public async Task List(CommandContext ctx)
         {
             var dataList = DataManager.GetData(ctx.Guild).Leveling.LevelRewards.OrderBy(lr => lr.RequiredLevel).ToList();
