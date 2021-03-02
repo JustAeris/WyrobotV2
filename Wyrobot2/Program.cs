@@ -39,7 +39,7 @@ namespace Wyrobot2
 
             _client.UseInteractivity(new InteractivityConfiguration
             {
-                PollBehaviour = PollBehaviour.KeepEmojis,
+                PollBehaviour = PollBehaviour.DeleteEmojis,
                 Timeout = TimeSpan.FromSeconds(30)
             });
             
@@ -60,6 +60,7 @@ namespace Wyrobot2
             commands.RegisterCommands<SettingsCommands>();
             commands.RegisterCommands<LevelingCommands>();
             commands.RegisterCommands<LevelingSettingsCommands>();
+            commands.RegisterCommands<LevelRewardsSettingsCommands>();
             
             await _client.ConnectAsync(new DiscordActivity
             {
