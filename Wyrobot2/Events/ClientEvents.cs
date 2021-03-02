@@ -55,15 +55,19 @@ namespace Wyrobot2.Events
 
                         foreach (var reward in gldData.Leveling.LevelRewards)
                         {
-                            if (reward.RequiredLevel > usrData.Level) continue;
+                            if (usrData.Level <= reward.RequiredLevel) continue;
                             var mbr = (DiscordMember) args.Author;
                             var role = args.Guild.GetRole(reward.RoleId);
+                            
                             if (mbr.Roles.Contains(role))
                             {
                                 // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                                sender.Logger.LogError($"{mbr.Username} has already the reward. Silently skipping the error");
-                                return;
+                                sender.Logger.LogError(
+                                    $"{mbr.Username} has already the reward. Silently skipping the error.");
+                                DataManager.SaveData(usrData);
+                                continue;
                             }
+
                             try
                             {
                                 await mbr.GrantRoleAsync(role);
@@ -71,12 +75,14 @@ namespace Wyrobot2.Events
                             catch (Exception e)
                             {
                                 // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                                sender.Logger.LogError($"Bot is lacking permissions to reward a user. Exception: {e}");
+                                sender.Logger.LogError(
+                                    $"Bot is lacking permissions to reward a user. Exception: {e}");
                                 await args.Channel.SendMessageAsync(new DiscordEmbedBuilder
                                 {
                                     Color = DiscordColor.Red,
                                     Title = "Error :raised_hand:",
-                                    Description = "I cannot reward a user, please consider moving the bot's role higher!"
+                                    Description =
+                                        "I cannot reward a user, please consider moving the bot's role higher!"
                                 });
                                 return;
                             }
