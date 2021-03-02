@@ -24,6 +24,9 @@
       <Compile Update="Data\Models\LevelReward.cs">
         <DependentUpon>GuildData.cs</DependentUpon>
       </Compile>
+      <Compile Update="Commands\LevelingSettingsCommands.cs">
+        <DependentUpon>LevelingCommands.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
