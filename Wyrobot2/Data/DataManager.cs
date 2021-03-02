@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 using DSharpPlus.Entities;
 using Newtonsoft.Json;
@@ -18,9 +20,7 @@ namespace Wyrobot2.Data
             var content = File.ReadAllText(path);
             return JsonConvert.DeserializeObject<T>(content);
         }
-
         public static GuildData GetData(DiscordGuild gld) => GetData<GuildData>(gld.Id);
-
         public static UserData GetData(DiscordUser user, DiscordGuild gld) => GetData<UserData>(user.Id, gld.Id);
         
         public static void SaveData<T>(T obj) where T : IDataManager
@@ -55,9 +55,13 @@ namespace Wyrobot2.Data
             if (guildId != 123456789) File.Delete(path);
             else Directory.Delete(path, true);
         }
-
         public static void DeleteData(DiscordGuild gld) => DeleteData(gld.Id);
-
         public static void DeleteData(DiscordUser user, DiscordGuild gld) => DeleteData(user.Id, gld.Id);
+        
+        private static IEnumerable<T> GetAllData<T>(ulong id)
+        {
+            return from file in Directory.GetFiles($"guilds/{id}/users/") where File.Exists(file) select JsonConvert.DeserializeObject<T>(File.ReadAllText(file));
+        }
+        public static IEnumerable<UserData> GetAllData(DiscordGuild gld) => GetAllData<UserData>(gld.Id);
     }
 }
