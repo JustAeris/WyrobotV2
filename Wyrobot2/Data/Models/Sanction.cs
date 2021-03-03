@@ -21,7 +21,13 @@ namespace Wyrobot2.Data.Models
             }
         }
 
-        public bool IsPermanent { get; set; }
+        public bool IsPermanent
+        {
+            get
+            {
+                return ExpiresAt == DateTimeOffset.MaxValue;
+            }
+        }
 
         public string? Reason { get; set; }
         
@@ -30,7 +36,8 @@ namespace Wyrobot2.Data.Models
             Warn,
             Mute,
             Kick,
-            Ban
+            Ban,
+            Unban
         }
     }
 
