@@ -7,6 +7,7 @@ namespace Wyrobot2.Data.Models
     public class Sanction
     {
         public SanctionType Type { get; set; }
+        public ulong BannerId { get; set; }
 
         public DateTimeOffset IssuedAt { get; set; }
         public DateTimeOffset ExpiresAt { get; set; }
@@ -21,13 +22,9 @@ namespace Wyrobot2.Data.Models
             }
         }
 
-        public bool IsPermanent
-        {
-            get
-            {
-                return ExpiresAt == DateTimeOffset.MaxValue;
-            }
-        }
+        public bool IsPermanent => ExpiresAt == DateTimeOffset.MaxValue;
+
+        public bool HasBeenUnbanned { get; set; }
 
         public string? Reason { get; set; }
         
