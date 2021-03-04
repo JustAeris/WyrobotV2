@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
@@ -6,6 +7,7 @@ using DSharpPlus.Entities;
 using Microsoft.Extensions.Logging;
 using Wyrobot2.Data;
 using Wyrobot2.Data.Models;
+// ReSharper disable TemplateIsNotCompileTimeConstantProblem
 
 namespace Wyrobot2.Events
 {
@@ -26,6 +28,45 @@ namespace Wyrobot2.Events
             {
                 DataManager.DeleteData(args.Guild);
                 return Task.CompletedTask;
+            };
+
+            client.GuildBanAdded += async (sender, args) =>
+            {
+                var usrData = DataManager.GetData(args.Member, args.Guild) ?? new UserData{ Id = args.Member.Id, GuildId = args.Guild.Id };
+                usrData.Sanctions ??= new List<Sanction>();
+                
+                var bans = await args.Guild.GetAuditLogsAsync(1, action_type: AuditLogActionType.Ban);
+                var banner = bans[0].UserResponsible;
+                var reason = bans[0].Reason ?? "No reason provided.";
+                
+                usrData.Sanctions.Add(new Sanction
+                {
+                    Type = Sanction.SanctionType.Ban,
+                    BannerId = banner.Id,
+                    IssuedAt = DateTimeOffset.Now,
+                    ExpiresAt = DateTimeOffset.MaxValue,
+                    Reason = reason
+                });
+                
+                DataManager.SaveData(usrData);
+                
+                sender.Logger.LogInformation($"'{banner.Username}#{banner.Discriminator}' banned '{args.Member.Username}#{args.Member.Discriminator}' for the following reason: {reason}.");
+            };
+
+            client.GuildBanRemoved += async (sender, args) =>
+            {
+                var data = DataManager.GetData(args.Member, args.Guild);
+                var lastBan = data.Sanctions.LastOrDefault(s => s.Type == Sanction.SanctionType.Ban);
+                if (lastBan != null)
+                {
+                    lastBan.HasBeenUnbanned = true;
+                    lastBan.ExpiresAt = DateTimeOffset.Now;
+                    DataManager.SaveData(data);
+                }
+                
+                var unbans = await args.Guild.GetAuditLogsAsync(1, action_type: AuditLogActionType.Unban);
+                var responsible = unbans[0].UserResponsible;
+                sender.Logger.LogInformation($"'{responsible.Username}#{responsible.Discriminator}' unbanned '{args.Member.Username}#{args.Member.Discriminator}'.");
             };
 
             client.MessageCreated += async (sender, args) =>
