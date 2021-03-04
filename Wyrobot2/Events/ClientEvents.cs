@@ -32,17 +32,19 @@ namespace Wyrobot2.Events
 
             client.GuildBanAdded += async (sender, args) =>
             {
+                var sanctions = await args.Guild.GetAuditLogsAsync(10, action_type: AuditLogActionType.Kick);
+                var sanction = sanctions.OfType<DiscordAuditLogBanEntry>().FirstOrDefault(entry => entry.Target == args.Member);
+                if (sanction == null) return;
+                var responsible = sanction.UserResponsible;
+                var reason = sanction.Reason ?? "No reason provided.";
+                
                 var usrData = DataManager.GetData(args.Member, args.Guild) ?? new UserData{ Id = args.Member.Id, GuildId = args.Guild.Id };
                 usrData.Sanctions ??= new List<Sanction>();
-                
-                var bans = await args.Guild.GetAuditLogsAsync(1, action_type: AuditLogActionType.Ban);
-                var banner = bans[0].UserResponsible;
-                var reason = bans[0].Reason ?? "No reason provided.";
                 
                 usrData.Sanctions.Add(new Sanction
                 {
                     Type = Sanction.SanctionType.Ban,
-                    BannerId = banner.Id,
+                    PunisherId = responsible.Id,
                     IssuedAt = DateTimeOffset.Now,
                     ExpiresAt = DateTimeOffset.MaxValue,
                     Reason = reason
@@ -67,6 +69,31 @@ namespace Wyrobot2.Events
                 var unbans = await args.Guild.GetAuditLogsAsync(1, action_type: AuditLogActionType.Unban);
                 var responsible = unbans[0].UserResponsible;
                 sender.Logger.LogInformation($"'{responsible.Username}#{responsible.Discriminator}' unbanned '{args.Member.Username}#{args.Member.Discriminator}'.");
+            };
+
+            client.GuildMemberRemoved += async (sender, args) =>
+            {
+                var sanctions = await args.Guild.GetAuditLogsAsync(10, action_type: AuditLogActionType.Kick);
+                var sanction = sanctions.OfType<DiscordAuditLogKickEntry>().FirstOrDefault(entry => entry.Target == args.Member);
+                if (sanction == null) return;
+                var responsible = sanction.UserResponsible;
+                var reason = sanction.Reason ?? "No reason provided.";
+                
+                var usrData = DataManager.GetData(args.Member, args.Guild) ?? new UserData{ Id = args.Member.Id, GuildId = args.Guild.Id };
+                usrData.Sanctions ??= new List<Sanction>();
+                
+                usrData.Sanctions.Add(new Sanction
+                {
+                    Type = Sanction.SanctionType.Kick,
+                    PunisherId = responsible.Id,
+                    IssuedAt = DateTimeOffset.Now,
+                    ExpiresAt = DateTimeOffset.Now,
+                    Reason = reason
+                });
+                
+                DataManager.SaveData(usrData);
+
+                sender.Logger.LogInformation(EventIds.Kick ,$"'{responsible.Username}#{responsible.Discriminator}' kicked '{args.Member.Username}#{args.Member.Discriminator}' for the following reason: {reason}.");
             };
 
             client.MessageCreated += async (sender, args) =>
