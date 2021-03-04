@@ -37,7 +37,7 @@ namespace Wyrobot2.Commands
             usrData.Sanctions.Add(new Sanction
             {
                 Type = Sanction.SanctionType.Ban,
-                BannerId = ctx.Member.Id,
+                PunisherId = ctx.Member.Id,
                 IssuedAt = DateTimeOffset.Now,
                 ExpiresAt = expiresIn == TimeSpan.MaxValue ? DateTimeOffset.MaxValue : DateTimeOffset.Now + expiresIn,
                 Reason = reason
