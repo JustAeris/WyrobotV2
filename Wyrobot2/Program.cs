@@ -61,6 +61,7 @@ namespace Wyrobot2
             commands.RegisterCommands<LevelingCommands>();
             commands.RegisterCommands<LevelingSettingsCommands>();
             commands.RegisterCommands<LevelRewardsSettingsCommands>();
+            commands.RegisterCommands<ModerationCommands>();
             
             await _client.ConnectAsync(new DiscordActivity
             {
