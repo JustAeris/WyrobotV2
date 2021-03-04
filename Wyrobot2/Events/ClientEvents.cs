@@ -59,7 +59,7 @@ namespace Wyrobot2.Events
                 var lastBan = data.Sanctions.LastOrDefault(s => s.Type == Sanction.SanctionType.Ban);
                 if (lastBan != null)
                 {
-                    lastBan.HasBeenUnbanned = true;
+                    lastBan.Type = Sanction.SanctionType.Unban;
                     lastBan.ExpiresAt = DateTimeOffset.Now;
                     DataManager.SaveData(data);
                 }

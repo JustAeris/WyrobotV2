@@ -24,8 +24,6 @@ namespace Wyrobot2.Data.Models
 
         public bool IsPermanent => ExpiresAt == DateTimeOffset.MaxValue;
 
-        public bool HasBeenUnbanned { get; set; }
-
         public string? Reason { get; set; }
         
         public enum SanctionType

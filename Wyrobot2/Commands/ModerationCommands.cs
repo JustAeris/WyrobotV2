@@ -40,8 +40,7 @@ namespace Wyrobot2.Commands
                 BannerId = ctx.Member.Id,
                 IssuedAt = DateTimeOffset.Now,
                 ExpiresAt = expiresIn == TimeSpan.MaxValue ? DateTimeOffset.MaxValue : DateTimeOffset.Now + expiresIn,
-                Reason = reason,
-                HasBeenUnbanned = false
+                Reason = reason
             });
 
             try
