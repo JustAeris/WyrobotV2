@@ -8,6 +8,8 @@ using DSharpPlus.Entities;
 using Microsoft.Extensions.Logging;
 using Wyrobot2.Data;
 using Wyrobot2.Data.Models;
+using Wyrobot2.Events;
+
 // ReSharper disable UnusedMember.Global
 // ReSharper disable TemplateIsNotCompileTimeConstantProblem
 // ReSharper disable MemberCanBePrivate.Global
@@ -52,7 +54,7 @@ namespace Wyrobot2.Commands
             }
             catch (Exception e)
             {
-                ctx.Client.Logger.LogError($"An error occured while trying to ban '{member.Username}#{member.Discriminator}'. Exception: {e}");
+                ctx.Client.Logger.LogError(EventIds.Error, $"An error occured while trying to ban '{member.Username}#{member.Discriminator}'. Exception: {e}");
                 
                 await ctx.RespondAsync(new DiscordEmbedBuilder()
                     .WithTitle("Oops! An error occured.")
@@ -64,7 +66,7 @@ namespace Wyrobot2.Commands
             }
             
             DataManager.SaveData(usrData);
-            ctx.Client.Logger.LogInformation($"'{ctx.Member.Username}#{ctx.Member.Discriminator}' banned '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
+            ctx.Client.Logger.LogInformation(EventIds.Ban , $"'{ctx.Member.Username}#{ctx.Member.Discriminator}' banned '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
             
             await ctx.RespondAsync(new DiscordEmbedBuilder()
                 .WithTitle(":hammer: Success!")

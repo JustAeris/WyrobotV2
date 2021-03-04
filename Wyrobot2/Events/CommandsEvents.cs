@@ -16,7 +16,7 @@ namespace Wyrobot2.Events
         {
             commands.CommandExecuted += (_, e) =>
             {
-                e.Context.Client.Logger.LogInformation(
+                e.Context.Client.Logger.LogInformation(EventIds.CommandExecution, 
                     // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
                     $"User '{e.Context.User.Username}#{e.Context.User.Discriminator}' ({e.Context.User.Id}) executed '{e.Command.QualifiedName}' in #{e.Context.Channel.Name} ({e.Context.Channel.Id})",
                     DateTime.Now);
@@ -25,7 +25,7 @@ namespace Wyrobot2.Events
 
             commands.CommandErrored += async (_, e) =>
             {
-                e.Context.Client.Logger.LogError(
+                e.Context.Client.Logger.LogError(EventIds.Error, 
                     // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
                     $"User '{e.Context.User.Username}#{e.Context.User.Discriminator}' ({e.Context.User.Id}) tried to execute '{e.Command?.QualifiedName ?? "<unknown command>"}' "
                     + $"in #{e.Context.Channel.Name} ({e.Context.Channel.Id}) and failed with {e.Exception.GetType()}: {e.Exception.Message}",
@@ -39,7 +39,7 @@ namespace Wyrobot2.Events
                 switch (ex)
                 {
                     case CommandNotFoundException:
-                        break; // ignore
+                        break; // Ignore
                     case ChecksFailedException cfe:
                     {
                         if (!cfe.FailedChecks.Any(x => x is RequirePrefixesAttribute))

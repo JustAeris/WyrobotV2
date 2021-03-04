@@ -52,7 +52,7 @@ namespace Wyrobot2.Events
                 
                 DataManager.SaveData(usrData);
                 
-                sender.Logger.LogInformation($"'{banner.Username}#{banner.Discriminator}' banned '{args.Member.Username}#{args.Member.Discriminator}' for the following reason: {reason}.");
+                sender.Logger.LogInformation(EventIds.Ban , $"'{responsible.Username}#{responsible.Discriminator}' banned '{args.Member.Username}#{args.Member.Discriminator}' for the following reason: {reason}.");
             };
 
             client.GuildBanRemoved += async (sender, args) =>
@@ -68,7 +68,7 @@ namespace Wyrobot2.Events
                 
                 var unbans = await args.Guild.GetAuditLogsAsync(1, action_type: AuditLogActionType.Unban);
                 var responsible = unbans[0].UserResponsible;
-                sender.Logger.LogInformation($"'{responsible.Username}#{responsible.Discriminator}' unbanned '{args.Member.Username}#{args.Member.Discriminator}'.");
+                sender.Logger.LogInformation(EventIds.Unban , $"'{responsible.Username}#{responsible.Discriminator}' unbanned '{args.Member.Username}#{args.Member.Discriminator}'.");
             };
 
             client.GuildMemberRemoved += async (sender, args) =>
@@ -130,7 +130,7 @@ namespace Wyrobot2.Events
                             if (mbr.Roles.Contains(role))
                             {
                                 // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                                sender.Logger.LogError(
+                                sender.Logger.LogError(EventIds.Error ,
                                     $"{mbr.Username} has already the reward. Silently skipping the error.");
                                 DataManager.SaveData(usrData);
                                 continue;
@@ -143,7 +143,7 @@ namespace Wyrobot2.Events
                             catch (Exception e)
                             {
                                 // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                                sender.Logger.LogError(
+                                sender.Logger.LogError(EventIds.Error, 
                                     $"Bot is lacking permissions to reward a user. Exception: {e}");
                                 await args.Channel.SendMessageAsync(new DiscordEmbedBuilder
                                 {
