@@ -31,6 +31,7 @@ namespace Wyrobot2.Commands
                         $"{DiscordEmoji.FromName(ctx.Client, ":raised_hand:")} You lack permissions necessary to run this command.",
                     Color = new DiscordColor(0xFF0000)
                 });
+                return;
             }
             
             var usrData = DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
@@ -95,6 +96,7 @@ namespace Wyrobot2.Commands
                         $"{DiscordEmoji.FromName(ctx.Client, ":raised_hand:")} You lack permissions necessary to run this command.",
                     Color = new DiscordColor(0xFF0000)
                 });
+                return;
             }
             
             var usrData = DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
@@ -151,6 +153,7 @@ namespace Wyrobot2.Commands
                         $"{DiscordEmoji.FromName(ctx.Client, ":raised_hand:")} You lack permissions necessary to run this command.",
                     Color = new DiscordColor(0xFF0000)
                 });
+                return;
             }
             
             var usrData = DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
