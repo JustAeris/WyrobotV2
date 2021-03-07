@@ -49,9 +49,6 @@ namespace Wyrobot2.Data
         {
             var path = guildId != 123456789 ? $"guilds/{guildId}/users/{id}.json" : $"guilds/{id}/";
 
-            if (!File.Exists(path))
-                return;
-
             if (guildId != 123456789) File.Delete(path);
             else Directory.Delete(path, true);
         }
