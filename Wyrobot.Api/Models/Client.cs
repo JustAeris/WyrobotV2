@@ -23,6 +23,6 @@ namespace Wyrobot.Api.Models
             DiscordClient.InitializeAsync();
         }
         
-        public static DiscordClient DiscordClient { get; set; }
+        public static DiscordClient DiscordClient { get; }
     }
 }
