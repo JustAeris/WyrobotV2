@@ -8,6 +8,8 @@ namespace Wyrobot2.Data.Models
         public ulong Id { get; init; }
 
         public string Prefix { get; set; }
+
+        public ulong? IntegrationRoleId { get; set; }
         
         public GuildData()
         {
