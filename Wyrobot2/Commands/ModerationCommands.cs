@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
@@ -46,7 +47,7 @@ namespace Wyrobot2.Commands
                 });
                 return;
             }
-            
+
             var usrData = DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
             usrData.Sanctions ??= new List<Sanction>();
             
@@ -258,6 +259,18 @@ namespace Wyrobot2.Commands
             
             var usrData = DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
             usrData.Sanctions ??= new List<Sanction>();
+
+            if (usrData.Sanctions.Any(s => s.Type == Sanction.SanctionType.Mute && !s.HasExpired))
+            {
+                await ctx.RespondAsync(new DiscordEmbedBuilder
+                {
+                    Title = "Oops!",
+                    Description =
+                        $"{DiscordEmoji.FromName(ctx.Client, ":raised_hand:")} User is already muted.",
+                    Color = new DiscordColor(0xFF0000)
+                });
+                return;
+            }
             
             usrData.Sanctions.Add(new Sanction
             {
@@ -333,6 +346,21 @@ namespace Wyrobot2.Commands
                 });
                 return;
             }
+            
+            var usrData = DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
+            usrData.Sanctions ??= new List<Sanction>();
+
+            if (!usrData.Sanctions.Any(s => s.Type != Sanction.SanctionType.Mute && !s.HasExpired))
+            {
+                await ctx.RespondAsync(new DiscordEmbedBuilder
+                {
+                    Title = "Oops!",
+                    Description =
+                        $"{DiscordEmoji.FromName(ctx.Client, ":raised_hand:")} User is not muted.",
+                    Color = new DiscordColor(0xFF0000)
+                });
+                return;
+            }
 
             try
             {
@@ -351,7 +379,12 @@ namespace Wyrobot2.Commands
                     .WithFooter($"Issuer ID: {ctx.User.Id}")
                     .WithTimestamp(DateTime.UtcNow));
             }
+
+            var lastMute = usrData.Sanctions.Last(s => s.Type == Sanction.SanctionType.Mute);
+            lastMute.ExpiresAt = DateTimeOffset.Now;
             
+            DataManager.SaveData(usrData);
+
             ctx.Client.Logger.LogInformation(EventIds.Mute , $"'{ctx.Member.Username}#{ctx.Member.Discriminator}' muted '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
             
             await ctx.RespondAsync(new DiscordEmbedBuilder()
