@@ -17,5 +17,7 @@ namespace Wyrobot2.Events
         public static readonly EventId ScheduledError = new EventId(6, "Error");
 
         public static readonly EventId CommandExecution = new EventId(7, "CmdExe");
+
+        public static readonly EventId GuildRelated = new EventId(8, "Guild");
     }
 }
