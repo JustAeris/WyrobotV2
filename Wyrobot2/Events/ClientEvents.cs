@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,13 +16,41 @@ namespace Wyrobot2.Events
     {
         public static void RegisterEvents(this DiscordClient client)
         {
-            client.GuildCreated += (_, args) =>
+            client.GuildCreated += async (sender, args) =>
             {
+                var role = await args.Guild.CreateRoleAsync("Wyrobot Mute", Permissions.None, new DiscordColor(54, 57, 63), false, false,
+                    "Mute role creation on join");
+
+                _ = Task.Run(async () =>
+                {
+                    foreach (var (_, value) in args.Guild.Channels)
+                    {
+                        try
+                        {
+                            await value.AddOverwriteAsync(role, Permissions.None,
+                                Permissions.Speak | Permissions.SendMessages, "Auto permissions set");
+                            await Task.Delay(2000);
+                        }
+                        catch (Exception e)
+                        {
+                            sender.Logger.LogError(EventIds.Error, e, $"Could not set permission for channel '#{value.Name}' ({value.Id}) in guild '{args.Guild.Name}' ({args.Guild.Id}).");
+                        }
+                    }
+                    sender.Logger.LogInformation(EventIds.GuildRelated, $"Channel permissions set for guild '{args.Guild.Name}' ({args.Guild.Id})");
+                });
+                
+                var bot = await args.Guild.GetMemberAsync(sender.CurrentUser.Id);
+
+                var first = bot.Roles.FirstOrDefault();
+
+                await role.ModifyPositionAsync(first?.Position ?? args.Guild.Roles.Last().Value.Position);
+
                 DataManager.SaveData(new GuildData
                 {
-                    Id = args.Guild.Id
+                    Id = args.Guild.Id,
+                    IntegrationRoleId = first?.Id ?? 0,
+                    Moderation = {MuteRoleId = role.Id}
                 });
-                return Task.CompletedTask;
             };
 
             client.GuildDeleted += (_, args) =>
