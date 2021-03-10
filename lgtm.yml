@@ -1,0 +1,10 @@
+extraction:
+  csharp:
+    index:
+      solution: Wyrobot2.sln
+      buildless: true
+      msbuild:
+        configuration: Debug  
+        platform: Any CPU
+      dotnet:
+        version: 5.0.103
