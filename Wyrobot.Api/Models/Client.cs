@@ -1,6 +1,5 @@
 ﻿using DSharpPlus;
 using Microsoft.Extensions.Logging;
-using Wyrobot.Api.Models;
 
 namespace Wyrobot.Api.Models
 {
