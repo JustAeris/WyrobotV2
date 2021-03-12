@@ -9,7 +9,11 @@ namespace Wyrobot.Api
     {
         public static void Main(string[] args)
         {
-            if (args[0] == "getkey") Console.WriteLine(Token.Generate(false));
+            if (args.Length > 0 && args[0] == "getkey")
+            {
+                Console.WriteLine(Token.Generate(Token.ApiGuid, false));
+                return;
+            }
             CreateHostBuilder(args).Build().Run();
         }
 

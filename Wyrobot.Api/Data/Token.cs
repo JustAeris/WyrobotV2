@@ -10,13 +10,14 @@ namespace Wyrobot.Api.Data
 {
     public static class Token
     {
-        public static string Generate(bool htmlEncode = true)
+        internal static Guid ApiGuid { get; } =
+            new(((string) JObject.Parse(File.ReadAllText("appsettings.json"))[nameof(ApiGuid)])!);
+        
+        public static string Generate(Guid guid, bool htmlEncode = true)
         {
-            var apiGuid = (string) JObject.Parse(File.ReadAllText("appsettings.json"))["ApiGuid"];
-            
             IEnumerable<byte> bytes = Encoding.UTF8.GetBytes(DateTime.Today.ToLongDateString());
 
-            IEnumerable<byte> bytes2 = new Guid(apiGuid!).ToByteArray();
+            IEnumerable<byte> bytes2 = guid.ToByteArray();
 
             var finalBytes = bytes.Concat(bytes2).ToArray();
 
@@ -31,7 +32,7 @@ namespace Wyrobot.Api.Data
 
         public static bool Authorize(string key, bool isEncoded = true)
         {
-            var finalKey = Generate(isEncoded);
+            var finalKey = Generate(ApiGuid, isEncoded);
 
             return finalKey == key;
         }
