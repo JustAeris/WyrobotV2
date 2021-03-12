@@ -218,7 +218,7 @@ namespace Wyrobot2.Commands
             }
             
             DataManager.SaveData(usrData);
-            ctx.Client.Logger.LogInformation(EventIds.Kick , $"'{ctx.Member.Username}#{ctx.Member.Discriminator}' warned '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
+            ctx.Client.Logger.LogInformation(EventIds.Warn, $"'{ctx.Member.Username}#{ctx.Member.Discriminator}' warned '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
             
             await ctx.RespondAsync(new DiscordEmbedBuilder()
                 .WithTitle(":hammer: Success!")
@@ -284,7 +284,7 @@ namespace Wyrobot2.Commands
             try
             {
                 var gldData = DataManager.GetData(ctx.Guild);
-                await member.GrantRoleAsync(ctx.Guild.GetRole(gldData.Moderation.MuteRoleId), "'{ctx.Member.Username}#{ctx.Member.Discriminator}' muted '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
+                await member.GrantRoleAsync(ctx.Guild.GetRole(gldData.Moderation.MuteRoleId), $"'{ctx.Member.Username}#{ctx.Member.Discriminator}' muted '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
                 await member.SendMessageAsync("You have been " +
                                               $"{(expiresIn == TimeSpan.MaxValue ? "permanently muted" : $"muted for {(expiresIn > TimeSpan.FromDays(1) ? $"{expiresIn.TotalDays} days" : $"{expiresIn.TotalHours} hours")}")} " +
                                               $"from **{ctx.Guild.Name}** for the following reason: ```{reason}```"); }
@@ -365,7 +365,7 @@ namespace Wyrobot2.Commands
             try
             {
                 var gldData = DataManager.GetData(ctx.Guild);
-                await member.RevokeRoleAsync(ctx.Guild.GetRole(gldData.Moderation.MuteRoleId), "'{ctx.Member.Username}#{ctx.Member.Discriminator}' muted '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
+                await member.RevokeRoleAsync(ctx.Guild.GetRole(gldData.Moderation.MuteRoleId), $"'{ctx.Member.Username}#{ctx.Member.Discriminator}' muted '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
                 await member.SendMessageAsync($"You have been un-muted from **{ctx.Guild.Name}** for the following reason: ```{reason}```"); }
             catch (Exception e)
             {
