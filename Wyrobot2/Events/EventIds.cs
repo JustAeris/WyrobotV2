@@ -5,6 +5,7 @@ namespace Wyrobot2.Events
     public struct EventIds
     {
         public static readonly EventId Error = new EventId(0, "Error");
+        public static readonly EventId Warning = new EventId(1, "Warning");
         
         public static readonly EventId Ban = new EventId(2, "Ban");
         public static readonly EventId Unban = new EventId(2, "Unban");
