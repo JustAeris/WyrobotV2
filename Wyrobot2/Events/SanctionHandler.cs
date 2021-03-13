@@ -10,12 +10,12 @@ using Wyrobot2.Data.Models;
 
 namespace Wyrobot2.Events
 {
-    public static class RecurrentEvent
+    public static class SanctionHandler
     {
         private static readonly Timer Timer;
         private static DiscordClient _client;
 
-        static RecurrentEvent()
+        static SanctionHandler()
         {
             Timer = new Timer
             {
