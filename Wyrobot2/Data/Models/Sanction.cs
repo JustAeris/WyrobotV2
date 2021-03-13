@@ -18,9 +18,11 @@ namespace Wyrobot2.Data.Models
             get
             {
                 if (IsPermanent) return false;
-                return ExpiresAt < DateTimeOffset.Now;
+                return ExpiresAt.UtcDateTime < DateTimeOffset.Now.UtcDateTime;
             }
         }
+
+        public bool HasBeenHandled { get; set; }
 
         public bool IsPermanent => ExpiresAt == DateTimeOffset.MaxValue;
 
