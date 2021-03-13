@@ -63,6 +63,8 @@ namespace Wyrobot2
             commands.RegisterCommands<LevelRewardsSettingsCommands>();
             commands.RegisterCommands<ModerationCommands>();
             
+            RecurrentEvent.InitializeAndStart(_client);
+            
             await _client.ConnectAsync(new DiscordActivity
             {
                 Name = "with code",
