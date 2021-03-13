@@ -55,8 +55,14 @@ namespace Wyrobot2.Data
         public static void DeleteData(DiscordGuild gld) => DeleteData(gld.Id);
         public static void DeleteData(DiscordUser user, DiscordGuild gld) => DeleteData(user.Id, gld.Id);
         
-        private static IEnumerable<T> GetAllData<T>(ulong id)
+        private static IEnumerable<T> GetAllData<T>(ulong id = 0)
         {
+            if (typeof(T) == typeof(GuildData))
+            {
+                var directories = Directory.GetDirectories("guilds/");
+                return directories.Select(directory => JsonConvert.DeserializeObject<T>(File.ReadAllText(Path.Combine(directory, "settings.json")))).ToList();
+            }
+            
             return from file in Directory.GetFiles($"guilds/{id}/users/") where File.Exists(file) select JsonConvert.DeserializeObject<T>(File.ReadAllText(file));
         }
         public static IEnumerable<UserData> GetAllData(DiscordGuild gld) => GetAllData<UserData>(gld.Id);
