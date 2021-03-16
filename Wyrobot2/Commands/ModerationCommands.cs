@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using DSharpPlus.Interactivity.Enums;
+using DSharpPlus.Interactivity.Extensions;
 using Microsoft.Extensions.Logging;
 using Wyrobot2.Data;
 using Wyrobot2.Data.Models;
@@ -394,6 +397,119 @@ namespace Wyrobot2.Commands
                 .WithThumbnail(member.AvatarUrl)
                 .WithFooter($"Issuer ID: {ctx.User.Id}")
                 .WithTimestamp(DateTime.UtcNow));
+        }
+
+        [Command("sanctions"), Description("Show sanctions for a given user.")] // TODO: Improve the result
+        public async Task Sanctions(CommandContext ctx, [Description("User to show sanctions. If not given, show for self.")] DiscordMember mbr = null)
+        {
+            await ctx.TriggerTypingAsync();
+            
+            var data = DataManager.GetData(mbr ?? ctx.Member, ctx.Guild);
+
+            var dataList = data.Sanctions.OrderBy(s => s.Type).ToList();
+            
+            if (!dataList.Any())
+            {
+                await ctx.RespondAsync(":white_check_mark: This user has not been punished in the past.");
+                return;
+            }
+            
+            var interactivity = ctx.Client.GetInteractivity();
+
+            var sb = new StringBuilder();
+
+            
+            if (dataList.Any(sanction => sanction.Type == Sanction.SanctionType.Warn))
+            {
+                sb.AppendLine("**Warns**");
+                foreach (var sanction in dataList.FindAll(s => s.Type == Sanction.SanctionType.Warn))
+                {
+                    DiscordMember punisher = null;
+                    try
+                    {
+                        punisher = await ctx.Guild.GetMemberAsync(sanction.PunisherId);
+                    }
+                    catch (Exception e)
+                    {
+                        ctx.Client.Logger.LogWarning(EventIds.Warning, e,
+                            $"Could not get the punisher of ID '{sanction.PunisherId}'");
+                    }
+
+                    sb.AppendLine(
+                        $"Issued at: `{sanction.IssuedAt}` **|** Reason: `{sanction.Reason}`{(punisher != null ? $" **|** Punisher: {punisher.Mention}" : null)}");
+                }
+                sb.AppendLine();
+            }
+
+            if (dataList.Any(sanction => sanction.Type == Sanction.SanctionType.Mute))
+            {
+                sb.AppendLine("**Mutes**");
+                foreach (var sanction in dataList.FindAll(s => s.Type == Sanction.SanctionType.Mute))
+                {
+                    DiscordMember punisher = null;
+                    try
+                    {
+                        punisher = await ctx.Guild.GetMemberAsync(sanction.PunisherId);
+                    }
+                    catch (Exception e)
+                    {
+                        ctx.Client.Logger.LogWarning(EventIds.Warning, e,
+                            $"Could not get the punisher of ID '{sanction.PunisherId}'");
+                    }
+
+                    sb.AppendLine(
+                        $"Issued at: `{sanction.IssuedAt}` **|** Duration: `{(sanction.IsPermanent ? "Permanent" : sanction.HasExpired ? $"Expired on {sanction.ExpiresAt}" : $"Expires at {sanction.ExpiresAt}")}` **|** Reason: `{sanction.Reason}`{(punisher != null ? $" **|** Punisher: {punisher.Mention}" : null)}");
+                }
+                sb.AppendLine();
+            }
+            
+            if (dataList.Any(sanction => sanction.Type == Sanction.SanctionType.Kick))
+            {
+                sb.AppendLine("**Kicks**");
+                foreach (var sanction in dataList.FindAll(s => s.Type == Sanction.SanctionType.Kick))
+                {
+                    DiscordMember punisher = null;
+                    try
+                    {
+                        punisher = await ctx.Guild.GetMemberAsync(sanction.PunisherId);
+                    }
+                    catch (Exception e)
+                    {
+                        ctx.Client.Logger.LogWarning(EventIds.Warning, e,
+                            $"Could not get the punisher of ID '{sanction.PunisherId}'");
+                    }
+
+                    sb.AppendLine(
+                        $"Issued at: `{sanction.IssuedAt}` **|** Reason: `{sanction.Reason}`{(punisher != null ? $" **|** Punisher: {punisher.Mention}" : null)}");
+                }
+                sb.AppendLine();
+            }
+            
+            if (dataList.Any(sanction => sanction.Type == Sanction.SanctionType.Ban))
+            {
+                sb.AppendLine("**Bans**");
+                foreach (var sanction in dataList.FindAll(s => s.Type == Sanction.SanctionType.Ban))
+                {
+                    DiscordMember punisher = null;
+                    try
+                    {
+                        punisher = await ctx.Guild.GetMemberAsync(sanction.PunisherId);
+                    }
+                    catch (Exception e)
+                    {
+                        ctx.Client.Logger.LogWarning(EventIds.Warning, e,
+                            $"Could not get the punisher of ID '{sanction.PunisherId}'");
+                    }
+
+                    sb.AppendLine(
+                        $"Issued at: `{sanction.IssuedAt}` **|** Duration: `{(sanction.IsPermanent ? "Permanent" : sanction.HasExpired ? $"Expired on {sanction.ExpiresAt}" : $"Expires at {sanction.ExpiresAt}")}` **|** Reason: `{sanction.Reason}`{(punisher != null ? $" **|** Punisher: {punisher.Mention}" : null)}");
+                }
+                sb.AppendLine();
+            }
+
+            var pages = interactivity.GeneratePagesInContent(sb.ToString().TrimEnd('\r', '\n'), SplitType.Line);
+            
+            await interactivity.SendPaginatedMessageAsync(ctx.Channel, ctx.User, pages);
         }
     }
 }
