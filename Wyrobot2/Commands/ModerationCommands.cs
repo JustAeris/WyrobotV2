@@ -33,7 +33,8 @@ namespace Wyrobot2.Commands
                     Description =
                         $"{DiscordEmoji.FromName(ctx.Client, ":raised_hand:")} You lack permissions necessary to run this command.",
                     Color = new DiscordColor(0xFF0000)
-                });
+                }
+                    .Build());
                 return;
             }
             
@@ -46,7 +47,8 @@ namespace Wyrobot2.Commands
                     Description =
                         $"{DiscordEmoji.FromName(ctx.Client, ":raised_hand:")} The bot needs a higher role to run this command.",
                     Color = new DiscordColor(0xFF0000)
-                });
+                }
+                    .Build());
                 return;
             }
 
@@ -79,7 +81,8 @@ namespace Wyrobot2.Commands
                         $"An error occured while trying to ban '{member.Username}#{member.Discriminator}'. Be sure the bot has enough permissions and retry again.")
                     .WithColor(DiscordColor.DarkRed)
                     .WithFooter($"Issuer ID: {ctx.User.Id}")
-                    .WithTimestamp(DateTime.UtcNow));
+                    .WithTimestamp(DateTime.UtcNow)
+                    .Build());
             }
             
             DataManager.SaveData(usrData);
@@ -93,7 +96,8 @@ namespace Wyrobot2.Commands
                 .WithColor(DiscordColor.DarkButNotBlack)
                 .WithThumbnail(member.AvatarUrl)
                 .WithFooter($"Issuer ID: {ctx.User.Id}")
-                .WithTimestamp(DateTime.UtcNow));
+                .WithTimestamp(DateTime.UtcNow)
+                .Build());
         }
 
         [Command("ban"), RequirePermissions(Permissions.BanMembers), Priority(1)]
@@ -111,7 +115,8 @@ namespace Wyrobot2.Commands
                     Description =
                         $"{DiscordEmoji.FromName(ctx.Client, ":raised_hand:")} You lack permissions necessary to run this command.",
                     Color = new DiscordColor(0xFF0000)
-                });
+                }
+                    .Build());
                 return;
             }
             
@@ -124,7 +129,8 @@ namespace Wyrobot2.Commands
                     Description =
                         $"{DiscordEmoji.FromName(ctx.Client, ":raised_hand:")} The bot needs a higher role to run this command.",
                     Color = new DiscordColor(0xFF0000)
-                });
+                }
+                    .Build());
                 return;
             }
             
@@ -155,7 +161,8 @@ namespace Wyrobot2.Commands
                         $"An error occured while trying to ban '{member.Username}#{member.Discriminator}'. Be sure the bot has enough permissions and retry again.")
                     .WithColor(DiscordColor.DarkRed)
                     .WithFooter($"Issuer ID: {ctx.User.Id}")
-                    .WithTimestamp(DateTime.UtcNow));
+                    .WithTimestamp(DateTime.UtcNow)
+                    .Build());
             }
             
             DataManager.SaveData(usrData);
@@ -167,7 +174,8 @@ namespace Wyrobot2.Commands
                 .WithColor(DiscordColor.DarkButNotBlack)
                 .WithThumbnail(member.AvatarUrl)
                 .WithFooter($"Issuer ID: {ctx.User.Id}")
-                .WithTimestamp(DateTime.UtcNow));
+                .WithTimestamp(DateTime.UtcNow)
+                .Build());
         }
         
         [Command("warn"), RequirePermissions(Permissions.ManageMessages), Description("Warns a member.")]
@@ -181,7 +189,8 @@ namespace Wyrobot2.Commands
                     Description =
                         $"{DiscordEmoji.FromName(ctx.Client, ":raised_hand:")} You lack permissions necessary to run this command.",
                     Color = new DiscordColor(0xFF0000)
-                });
+                }
+                    .Build());
                 return;
             }
             
@@ -194,7 +203,8 @@ namespace Wyrobot2.Commands
                     Description =
                         $"{DiscordEmoji.FromName(ctx.Client, ":raised_hand:")} The bot needs a higher role to run this command.",
                     Color = new DiscordColor(0xFF0000)
-                });
+                }
+                    .Build());
                 return;
             }
             
@@ -228,7 +238,8 @@ namespace Wyrobot2.Commands
                 .WithColor(DiscordColor.DarkButNotBlack)
                 .WithThumbnail(member.AvatarUrl)
                 .WithFooter($"Issuer ID: {ctx.User.Id}")
-                .WithTimestamp(DateTime.UtcNow));
+                .WithTimestamp(DateTime.UtcNow)
+                .Build());
         }
 
         [Command("mute"), RequirePermissions(Permissions.ManageMessages), Priority(2), Description("Mutes a member.")]
@@ -242,7 +253,8 @@ namespace Wyrobot2.Commands
                     Description =
                         $"{DiscordEmoji.FromName(ctx.Client, ":raised_hand:")} You lack permissions necessary to run this command.",
                     Color = new DiscordColor(0xFF0000)
-                });
+                }
+                    .Build());
                 return;
             }
 
@@ -255,7 +267,8 @@ namespace Wyrobot2.Commands
                     Description =
                         $"{DiscordEmoji.FromName(ctx.Client, ":raised_hand:")} The bot needs a higher role to run this command.",
                     Color = new DiscordColor(0xFF0000)
-                });
+                }
+                    .Build());
                 return;
             }
             
@@ -270,7 +283,8 @@ namespace Wyrobot2.Commands
                     Description =
                         $"{DiscordEmoji.FromName(ctx.Client, ":raised_hand:")} User is already muted.",
                     Color = new DiscordColor(0xFF0000)
-                });
+                }
+                    .Build());
                 return;
             }
             
@@ -300,7 +314,8 @@ namespace Wyrobot2.Commands
                         $"An error occured while trying to mute '{member.Username}#{member.Discriminator}'. Be sure the bot has enough permissions and retry again.")
                     .WithColor(DiscordColor.DarkRed)
                     .WithFooter($"Issuer ID: {ctx.User.Id}")
-                    .WithTimestamp(DateTime.UtcNow));
+                    .WithTimestamp(DateTime.UtcNow)
+                    .Build());
             }
             
             DataManager.SaveData(usrData);
@@ -314,7 +329,8 @@ namespace Wyrobot2.Commands
                 .WithColor(DiscordColor.DarkButNotBlack)
                 .WithThumbnail(member.AvatarUrl)
                 .WithFooter($"Issuer ID: {ctx.User.Id}")
-                .WithTimestamp(DateTime.UtcNow));
+                .WithTimestamp(DateTime.UtcNow)
+                .Build());
         }
 
         [Command("mute"), RequirePermissions(Permissions.BanMembers), Priority(1)]
@@ -332,7 +348,8 @@ namespace Wyrobot2.Commands
                     Description =
                         $"{DiscordEmoji.FromName(ctx.Client, ":raised_hand:")} You lack permissions necessary to run this command.",
                     Color = new DiscordColor(0xFF0000)
-                });
+                }
+                    .Build());
                 return;
             }
 
@@ -345,7 +362,8 @@ namespace Wyrobot2.Commands
                     Description =
                         $"{DiscordEmoji.FromName(ctx.Client, ":raised_hand:")} The bot needs a higher role to run this command.",
                     Color = new DiscordColor(0xFF0000)
-                });
+                }
+                    .Build());
                 return;
             }
             
@@ -360,7 +378,8 @@ namespace Wyrobot2.Commands
                     Description =
                         $"{DiscordEmoji.FromName(ctx.Client, ":raised_hand:")} User is not muted.",
                     Color = new DiscordColor(0xFF0000)
-                });
+                }
+                    .Build());
                 return;
             }
 
@@ -379,7 +398,8 @@ namespace Wyrobot2.Commands
                         $"An error occured while trying to un-mute '{member.Username}#{member.Discriminator}'. Be sure the bot has enough permissions and retry again.")
                     .WithColor(DiscordColor.DarkRed)
                     .WithFooter($"Issuer ID: {ctx.User.Id}")
-                    .WithTimestamp(DateTime.UtcNow));
+                    .WithTimestamp(DateTime.UtcNow)
+                    .Build());
             }
 
             var lastMute = usrData.Sanctions.Last(s => s.Type == Sanction.SanctionType.Mute);
@@ -395,7 +415,8 @@ namespace Wyrobot2.Commands
                 .WithColor(DiscordColor.DarkButNotBlack)
                 .WithThumbnail(member.AvatarUrl)
                 .WithFooter($"Issuer ID: {ctx.User.Id}")
-                .WithTimestamp(DateTime.UtcNow));
+                .WithTimestamp(DateTime.UtcNow)
+                .Build());
         }
 
         [Command("sanctions"), Description("Show sanctions for a given user.")] // TODO: Improve the result

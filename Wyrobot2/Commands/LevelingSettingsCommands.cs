@@ -25,7 +25,8 @@ namespace Wyrobot2.Commands
                 .WithDescription($"The leveling multiplier has been updated from **{oldValue}** to **{value}**")
                 .WithColor(DiscordColor.DarkButNotBlack)
                 .WithFooter($"Issuer ID: {ctx.User.Id}")
-                .WithTimestamp(DateTime.UtcNow));
+                .WithTimestamp(DateTime.UtcNow)
+                .Build());
         }
 
         [Command("enable"), Description("Enable / Disable leveling. This will not affect existing data."), RequireUserPermissions(Permissions.Administrator)]
@@ -40,7 +41,8 @@ namespace Wyrobot2.Commands
                 .WithDescription($"The leveling has been turned from **{oldValue}** to **{value}**")
                 .WithColor(DiscordColor.DarkButNotBlack)
                 .WithFooter($"Issuer ID: {ctx.User.Id}")
-                .WithTimestamp(DateTime.UtcNow));
+                .WithTimestamp(DateTime.UtcNow)
+                .Build());
         }
         
         [Command("message"), Description("Change the level-up message."), RequireUserPermissions(Permissions.Administrator)]
@@ -55,7 +57,8 @@ namespace Wyrobot2.Commands
                 .WithDescription($"The leveling message has been changed from **{oldValue}** to **{value}**")
                 .WithColor(DiscordColor.DarkButNotBlack)
                 .WithFooter($"Issuer ID: {ctx.User.Id}")
-                .WithTimestamp(DateTime.UtcNow));
+                .WithTimestamp(DateTime.UtcNow)
+                .Build());
         }
     }
 }

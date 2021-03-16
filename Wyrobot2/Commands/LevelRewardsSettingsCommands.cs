@@ -51,7 +51,8 @@ namespace Wyrobot2.Commands
                 .WithDescription($"{role.Mention} will no longer be awarded on level **{requiredLevel}**")
                 .WithColor(DiscordColor.DarkButNotBlack)
                 .WithFooter($"Issuer ID: {ctx.User.Id}")
-                .WithTimestamp(DateTime.UtcNow));
+                .WithTimestamp(DateTime.UtcNow)
+                .Build());
         }
         
         [Command("list"), Description("Lists all available level rewards for this guild.")]

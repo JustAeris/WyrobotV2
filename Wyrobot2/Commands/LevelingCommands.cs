@@ -38,7 +38,8 @@ namespace Wyrobot2.Commands
                 .WithColor(DiscordColor.DarkButNotBlack)
                 .WithThumbnail(mbr?.AvatarUrl ?? ctx.Member.AvatarUrl)
                 .WithFooter($"Issuer ID: {ctx.User.Id}")
-                .WithTimestamp(DateTime.UtcNow));
+                .WithTimestamp(DateTime.UtcNow)
+                .Build());
         }
 
         [Command("leaderboard"), Aliases("lb"), Description("Show the current leaderboard for this server.")]
