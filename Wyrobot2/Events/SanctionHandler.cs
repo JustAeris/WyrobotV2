@@ -6,7 +6,6 @@ using DSharpPlus.Entities;
 using Microsoft.Extensions.Logging;
 using Wyrobot2.Data;
 using Wyrobot2.Data.Models;
-// ReSharper disable TemplateIsNotCompileTimeConstantProblem
 
 namespace Wyrobot2.Events
 {
@@ -58,11 +57,11 @@ namespace Wyrobot2.Events
                                 }
                                 catch (Exception exception)
                                 {
-                                    _client.Logger.LogError(EventIds.ScheduledError, exception, $"Could not unban '{data.Id}'");
+                                    _client.Logger.LogError(EventIds.ScheduledError, exception, "Could not unban '{Id}'", data.Id);
                                     anyErrors = true;
                                     break;
                                 }
-                                _client.Logger.LogInformation(EventIds.Unban, $"'{data.Id}' has been automatically unbanned");
+                                _client.Logger.LogInformation(EventIds.Unban, "'{Id}' has been automatically unbanned", data.Id);
                                 sanction.HasBeenHandled = true;
                                 break;
                             
@@ -74,7 +73,7 @@ namespace Wyrobot2.Events
                                 }
                                 catch (Exception exception)
                                 {
-                                    _client.Logger.LogError(EventIds.ScheduledError, exception, $"Could not get member of ID '{data.Id}'");
+                                    _client.Logger.LogError(EventIds.ScheduledError, exception, "Could not get member of ID '{Id}'", data.Id);
                                     anyErrors = true;
                                     break;
                                 }
@@ -87,7 +86,7 @@ namespace Wyrobot2.Events
                                 }
                                 catch (Exception exception)
                                 {
-                                    _client.Logger.LogError(EventIds.ScheduledError, exception, $"Could not get role of ID '{guildData.Moderation.MuteRoleId}'");
+                                    _client.Logger.LogError(EventIds.ScheduledError, exception, "Could not get role of ID '{RoleId}'", guildData.Moderation.MuteRoleId);
                                     anyErrors = true;
                                     break;
                                 }
@@ -98,12 +97,12 @@ namespace Wyrobot2.Events
                                 }
                                 catch (Exception exception)
                                 {
-                                    _client.Logger.LogError(EventIds.ScheduledError, exception, $"Could not un-mute '{member.Username}'");
+                                    _client.Logger.LogError(EventIds.ScheduledError, exception, "Could not un-mute '{Username}'", member.Username);
                                     anyErrors = true;
                                     break;
                                 }
                                 
-                                _client.Logger.LogInformation(EventIds.Unmute, $"{member.Username}#{member.Discriminator} has been automatically un-mute");
+                                _client.Logger.LogInformation(EventIds.Unmute, "{Username}#{Discriminator} has been automatically un-mute", member.Username, member.Discriminator);
                                 sanction.HasBeenHandled = true;
                                 break;
                             

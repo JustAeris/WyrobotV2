@@ -15,7 +15,6 @@ using Wyrobot2.Data.Models;
 using Wyrobot2.Events;
 
 // ReSharper disable UnusedMember.Global
-// ReSharper disable TemplateIsNotCompileTimeConstantProblem
 // ReSharper disable MemberCanBePrivate.Global
 
 namespace Wyrobot2.Commands
@@ -72,7 +71,7 @@ namespace Wyrobot2.Commands
             }
             catch (Exception e)
             {
-                ctx.Client.Logger.LogError(EventIds.Error, $"An error occured while trying to ban '{member.Username}#{member.Discriminator}'. Exception: {e}");
+                ctx.Client.Logger.LogError(EventIds.Error, e, "An error occured while trying to ban '{Username}#{Discriminator}'", member.Username, member.Discriminator);
                 
                 await ctx.RespondAsync(new DiscordEmbedBuilder()
                     .WithTitle("Oops! An error occured.")
@@ -84,7 +83,7 @@ namespace Wyrobot2.Commands
             }
             
             DataManager.SaveData(usrData);
-            ctx.Client.Logger.LogInformation(EventIds.Ban , $"'{ctx.Member.Username}#{ctx.Member.Discriminator}' banned '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
+            ctx.Client.Logger.LogInformation(EventIds.Ban , "'{PunisherName}#{PunisherDiscriminator}' banned '{SanctionedName}#{SanctionedDiscriminator}' for the following reason: {Reason}", ctx.Member.Username, ctx.Member.Discriminator, member.Username, member.Discriminator, reason);
             
             await ctx.RespondAsync(new DiscordEmbedBuilder()
                 .WithTitle(":hammer: Success!")
@@ -148,7 +147,7 @@ namespace Wyrobot2.Commands
             }
             catch (Exception e)
             {
-                ctx.Client.Logger.LogError(EventIds.Error , $"An error occured while trying to kick '{member.Username}#{member.Discriminator}'. Exception: {e}");
+                ctx.Client.Logger.LogError(EventIds.Error, e, "An error occured while trying to kick '{Username}#{Discriminator}'", member.Username, member.Discriminator);
                 
                 await ctx.RespondAsync(new DiscordEmbedBuilder()
                     .WithTitle("Oops! An error occured.")
@@ -160,7 +159,7 @@ namespace Wyrobot2.Commands
             }
             
             DataManager.SaveData(usrData);
-            ctx.Client.Logger.LogInformation(EventIds.Kick , $"'{ctx.Member.Username}#{ctx.Member.Discriminator}' kicked '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
+            ctx.Client.Logger.LogInformation(EventIds.Kick, "'{PunisherName}#{PunisherDiscriminator}' kicked '{SanctionedName}#{SanctionedDiscriminator}' for the following reason: {Reason}", ctx.Member.Username, ctx.Member.Discriminator, member.Username, member.Discriminator, reason);
             
             await ctx.RespondAsync(new DiscordEmbedBuilder()
                 .WithTitle(":hammer: Success!")
@@ -221,7 +220,7 @@ namespace Wyrobot2.Commands
             }
             
             DataManager.SaveData(usrData);
-            ctx.Client.Logger.LogInformation(EventIds.Warn, $"'{ctx.Member.Username}#{ctx.Member.Discriminator}' warned '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
+            ctx.Client.Logger.LogInformation(EventIds.Warn, "'{PunisherName}#{PunisherDiscriminator}' warned '{SanctionedName}#{SanctionedDiscriminator}' for the following reason: {Reason}", ctx.Member.Username, ctx.Member.Discriminator, member.Username, member.Discriminator, reason);
             
             await ctx.RespondAsync(new DiscordEmbedBuilder()
                 .WithTitle(":hammer: Success!")
@@ -293,7 +292,7 @@ namespace Wyrobot2.Commands
                                               $"from **{ctx.Guild.Name}** for the following reason: ```{reason}```"); }
             catch (Exception e)
             {
-                ctx.Client.Logger.LogError(EventIds.Error, e, $"An error occured while trying to mute '{member.Username}#{member.Discriminator}'. Exception: {e}");
+                ctx.Client.Logger.LogError(EventIds.Error, e, "An error occured while trying to mute '{Username}#{Discriminator}'", member.Username, member.Discriminator);
                 
                 await ctx.RespondAsync(new DiscordEmbedBuilder()
                     .WithTitle("Oops! An error occured.")
@@ -305,7 +304,7 @@ namespace Wyrobot2.Commands
             }
             
             DataManager.SaveData(usrData);
-            ctx.Client.Logger.LogInformation(EventIds.Mute , $"'{ctx.Member.Username}#{ctx.Member.Discriminator}' muted '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
+            ctx.Client.Logger.LogInformation(EventIds.Mute, "'{PunisherName}#{PunisherDiscriminator}' muted '{SanctionedName}#{SanctionedDiscriminator}' for the following reason: {Reason}", ctx.Member.Username, ctx.Member.Discriminator, member.Username, member.Discriminator, reason);
             
             await ctx.RespondAsync(new DiscordEmbedBuilder()
                 .WithTitle(":hammer: Success!")
@@ -372,7 +371,7 @@ namespace Wyrobot2.Commands
                 await member.SendMessageAsync($"You have been un-muted from **{ctx.Guild.Name}** for the following reason: ```{reason}```"); }
             catch (Exception e)
             {
-                ctx.Client.Logger.LogError(EventIds.Error, e, $"An error occured while trying to un-mute '{member.Username}#{member.Discriminator}'. Exception: {e}");
+                ctx.Client.Logger.LogError(EventIds.Error, e, "An error occured while trying to un-mute '{Username}#{Discriminator}'", member.Username, member.Discriminator);
                 
                 await ctx.RespondAsync(new DiscordEmbedBuilder()
                     .WithTitle("Oops! An error occured.")
@@ -388,7 +387,7 @@ namespace Wyrobot2.Commands
             
             DataManager.SaveData(usrData);
 
-            ctx.Client.Logger.LogInformation(EventIds.Mute , $"'{ctx.Member.Username}#{ctx.Member.Discriminator}' muted '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
+            ctx.Client.Logger.LogInformation(EventIds.Unmute, "'{PunisherName}#{PunisherDiscriminator}' un-muted '{SanctionedName}#{SanctionedDiscriminator}' for the following reason: {Reason}", ctx.Member.Username, ctx.Member.Discriminator, member.Username, member.Discriminator, reason);
             
             await ctx.RespondAsync(new DiscordEmbedBuilder()
                 .WithTitle(":hammer: Success!")
@@ -432,7 +431,7 @@ namespace Wyrobot2.Commands
                     catch (Exception e)
                     {
                         ctx.Client.Logger.LogWarning(EventIds.Warning, e,
-                            $"Could not get the punisher of ID '{sanction.PunisherId}'");
+                            "Could not get the punisher of ID '{PunisherId}'", sanction.PunisherId);
                     }
 
                     sb.AppendLine(
@@ -454,7 +453,7 @@ namespace Wyrobot2.Commands
                     catch (Exception e)
                     {
                         ctx.Client.Logger.LogWarning(EventIds.Warning, e,
-                            $"Could not get the punisher of ID '{sanction.PunisherId}'");
+                            "Could not get the punisher of ID '{PunisherId}'", sanction.PunisherId);
                     }
 
                     sb.AppendLine(
@@ -476,7 +475,7 @@ namespace Wyrobot2.Commands
                     catch (Exception e)
                     {
                         ctx.Client.Logger.LogWarning(EventIds.Warning, e,
-                            $"Could not get the punisher of ID '{sanction.PunisherId}'");
+                            "Could not get the punisher of ID '{PunisherId}'", sanction.PunisherId);
                     }
 
                     sb.AppendLine(
@@ -498,7 +497,7 @@ namespace Wyrobot2.Commands
                     catch (Exception e)
                     {
                         ctx.Client.Logger.LogWarning(EventIds.Warning, e,
-                            $"Could not get the punisher of ID '{sanction.PunisherId}'");
+                            "Could not get the punisher of ID '{PunisherId}'", sanction.PunisherId);
                     }
 
                     sb.AppendLine(

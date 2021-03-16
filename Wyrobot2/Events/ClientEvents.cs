@@ -8,7 +8,6 @@ using DSharpPlus.Entities;
 using Microsoft.Extensions.Logging;
 using Wyrobot2.Data;
 using Wyrobot2.Data.Models;
-// ReSharper disable TemplateIsNotCompileTimeConstantProblem
 
 namespace Wyrobot2.Events
 {
@@ -33,10 +32,10 @@ namespace Wyrobot2.Events
                         }
                         catch (Exception e)
                         {
-                            sender.Logger.LogError(EventIds.Error, e, $"Could not set permission for channel '#{value.Name}' ({value.Id}) in guild '{args.Guild.Name}' ({args.Guild.Id}).");
+                            sender.Logger.LogError(EventIds.Error, e, "Could not set permission for channel '#{CName}' ({CId}) in guild '{GName}' ({GId})", value.Name, value.Id, args.Guild.Name, args.Guild.Id);
                         }
                     }
-                    sender.Logger.LogInformation(EventIds.GuildRelated, $"Channel permissions set for guild '{args.Guild.Name}' ({args.Guild.Id})");
+                    sender.Logger.LogDebug(EventIds.GuildRelated, "Channel permissions set for guild '{GName}' ({GId})", args.Guild.Name, args.Guild.Id);
                 });
                 
                 var bot = await args.Guild.GetMemberAsync(sender.CurrentUser.Id);
@@ -81,7 +80,7 @@ namespace Wyrobot2.Events
                 
                 DataManager.SaveData(usrData);
                 
-                sender.Logger.LogInformation(EventIds.Ban , $"'{responsible.Username}#{responsible.Discriminator}' banned '{args.Member.Username}#{args.Member.Discriminator}' for the following reason: {reason}.");
+                sender.Logger.LogInformation(EventIds.Ban, "'{RUsername}#{RDiscriminator}' banned '{PUsername}#{PDiscriminator}' for the following reason: {Reason}", responsible.Username, responsible.Discriminator, args.Member.Username, args.Member.Discriminator, reason);
             };
 
             client.GuildBanRemoved += async (sender, args) =>
@@ -97,7 +96,7 @@ namespace Wyrobot2.Events
                 
                 var unbans = await args.Guild.GetAuditLogsAsync(1, action_type: AuditLogActionType.Unban);
                 var responsible = unbans[0].UserResponsible;
-                sender.Logger.LogInformation(EventIds.Unban , $"'{responsible.Username}#{responsible.Discriminator}' unbanned '{args.Member.Username}#{args.Member.Discriminator}'.");
+                sender.Logger.LogInformation(EventIds.Unban, "'{RUsername}#{RDiscriminator}' unbanned '{UMUsername}#{UMDiscriminator}'", responsible.Username, responsible.Discriminator, args.Member.Username, args.Member.Discriminator);
             };
 
             client.GuildMemberRemoved += async (sender, args) =>
@@ -122,7 +121,7 @@ namespace Wyrobot2.Events
                 
                 DataManager.SaveData(usrData);
 
-                sender.Logger.LogInformation(EventIds.Kick ,$"'{responsible.Username}#{responsible.Discriminator}' kicked '{args.Member.Username}#{args.Member.Discriminator}' for the following reason: {reason}.");
+                sender.Logger.LogInformation(EventIds.Kick ,"'{RUsername}#{RDiscriminator}' kicked '{PUsername}#{PDiscriminator}' for the following reason: {Reason}", responsible.Username, responsible.Discriminator, args.Member.Username, args.Member.Discriminator, reason);
             };
 
             client.MessageCreated += async (sender, args) =>
@@ -158,9 +157,8 @@ namespace Wyrobot2.Events
                             
                             if (mbr.Roles.Contains(role))
                             {
-                                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                                sender.Logger.LogError(EventIds.Error ,
-                                    $"{mbr.Username} has already the reward. Silently skipping the error.");
+                                sender.Logger.LogWarning(EventIds.Warning,
+                                    "{MUsername}#{MDiscriminator} has already the reward. Silently skipping the error", mbr.Username, mbr.Discriminator);
                                 DataManager.SaveData(usrData);
                                 continue;
                             }
@@ -171,9 +169,8 @@ namespace Wyrobot2.Events
                             }
                             catch (Exception e)
                             {
-                                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                                sender.Logger.LogError(EventIds.Error, 
-                                    $"Bot is lacking permissions to reward a user. Exception: {e}");
+                                sender.Logger.LogError(EventIds.Error, e,
+                                    "Bot is lacking permissions to reward a user");
                                 await args.Channel.SendMessageAsync(new DiscordEmbedBuilder
                                 {
                                     Color = DiscordColor.Red,

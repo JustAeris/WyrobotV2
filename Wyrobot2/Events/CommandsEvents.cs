@@ -17,19 +17,17 @@ namespace Wyrobot2.Events
             commands.CommandExecuted += (_, e) =>
             {
                 e.Context.Client.Logger.LogInformation(EventIds.CommandExecution, 
-                    // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                    $"User '{e.Context.User.Username}#{e.Context.User.Discriminator}' ({e.Context.User.Id}) executed '{e.Command.QualifiedName}' in #{e.Context.Channel.Name} ({e.Context.Channel.Id})",
-                    DateTime.Now);
+                    "User '{Username}#{Discriminator}' ({UserId}) executed '{Command}' in #{ChannelName} ({ChannelId})",
+                    e.Context.User.Username, e.Context.User.Discriminator, e.Context.User.Id, e.Command.QualifiedName, e.Context.Channel.Name, e.Context.Channel.Id);
                 return Task.CompletedTask;
             };
 
             commands.CommandErrored += async (_, e) =>
             {
-                e.Context.Client.Logger.LogError(EventIds.Error, 
-                    // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                    $"User '{e.Context.User.Username}#{e.Context.User.Discriminator}' ({e.Context.User.Id}) tried to execute '{e.Command?.QualifiedName ?? "<unknown command>"}' "
-                    + $"in #{e.Context.Channel.Name} ({e.Context.Channel.Id}) and failed with {e.Exception.GetType()}: {e.Exception.Message}",
-                    DateTime.Now);
+                e.Context.Client.Logger.LogError(EventIds.Error, e.Exception,
+                    "User '{Username}#{Discriminator}' ({UserId}) tried to execute '{Command}' "
+                    + "in #{ChannelName} ({ChannelId}) and failed with {ExceptionType}: {ExceptionMessage}",
+                    e.Context.User.Username, e.Context.User.Discriminator, e.Context.User.Id, e.Command?.QualifiedName ?? "<unknown command>", e.Context.Channel.Name, e.Context.Channel.Id, e.Exception.GetType(), e.Exception.Message);
                 DiscordEmbedBuilder embed = null;
 
                 var ex = e.Exception;
