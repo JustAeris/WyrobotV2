@@ -190,6 +190,29 @@ namespace Wyrobot2.Events
                     DataManager.SaveData(usrData);
                 }
                 // ----- LEVELING END -----
+                
+                // ----- AUTO-MODERATION START -----
+                
+                if (!gldData.Moderation.AutoModerationEnabled) return;
+
+                if (gldData.Moderation.BannedWords.Any(bannedWord => args.Message.Content.Contains(bannedWord)))
+                {
+                    // TODO: punish here
+                    
+                    return;
+                }
+                
+                var capsCount = 0F;
+                foreach (var unused in args.Message.Content.Where(char.IsUpper))
+                    capsCount++;
+                if (capsCount > gldData.Moderation.CapsPercentage)
+                {
+                    // TODO: Punish here
+                    
+                    return;
+                }
+
+                // ----- AUTO-MODERATION END -----
             };
         }
     }
