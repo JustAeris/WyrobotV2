@@ -69,6 +69,7 @@ namespace Wyrobot2
             commands.RegisterCommands<LevelingSettingsCommands>();
             commands.RegisterCommands<LevelRewardsSettingsCommands>();
             commands.RegisterCommands<ModerationCommands>();
+            commands.RegisterCommands<WelcomeSettingsCommands>();
             
             SanctionHandler.InitializeAndStart(_client);
             
