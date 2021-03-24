@@ -20,8 +20,16 @@ namespace Wyrobot2.Data.Models
                 CapsPercentage = 15F,
                 AutoModerationEnabled = true
             };
-            Welcome = new WelcomeSettings();
+            
+            Welcome = new WelcomeSettings
+            {
+                Enabled = false,
+                ChannelId = 0,
+                Message = "Welcome {user}!"
+            };
+            
             Logging = new LoggingSettings();
+            
             Leveling = new LevelingSettings
             {
                 Enabled = true,
@@ -29,7 +37,9 @@ namespace Wyrobot2.Data.Models
                 Multiplier = 1,
                 LevelRewards = new List<LevelReward>()
             };
+            
             Other = new OtherSettings();
+            
             Moderation.ModerationRoles = new List<ulong>();
             Moderation.BannedWords = new List<string>();
         }
