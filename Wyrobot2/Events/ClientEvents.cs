@@ -101,7 +101,7 @@ namespace Wyrobot2.Events
         public static async Task OnGuildMemberAdded(DiscordClient sender, GuildMemberAddEventArgs args)
         {
             var gldData = DataManager.GetData(args.Guild);
-            if (!gldData.Welcome.Enabled) return;
+            if (!gldData.Welcome.Enabled || gldData.Welcome.Message == null || gldData.Welcome.ChannelId == 0) return;
             var channel = args.Guild.GetChannel(gldData.Welcome.ChannelId);
             if (channel == null)
             {
@@ -160,8 +160,8 @@ namespace Wyrobot2.Events
                     usrData.Xp -= usrData.XpToNextLevel;
                     usrData.Level += 1;
                     await args.Channel.SendMessageAsync(gldData.Leveling.Message
-                        .Replace("{user}", args.Author.Mention)
-                        .Replace("{level}", usrData.Level.ToString()));
+                        .Replace("{user}", args.Author.Mention, StringComparison.InvariantCultureIgnoreCase)
+                        .Replace("{level}", usrData.Level.ToString(), StringComparison.InvariantCultureIgnoreCase));
 
                     foreach (var reward in gldData.Leveling.LevelRewards)
                     {
@@ -265,8 +265,6 @@ namespace Wyrobot2.Events
             }
 
             // ----- AUTO-MODERATION END -----
-            
-            sender.Logger.LogInformation(EventIds.Success, "MessageCreated event successfully handled!");
         }
     }
 }
