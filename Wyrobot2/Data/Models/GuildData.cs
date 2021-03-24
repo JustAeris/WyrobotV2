@@ -17,7 +17,7 @@ namespace Wyrobot2.Data.Models
 
             Moderation = new ModerationSettings
             {
-                CapsPercentage = 15F,
+                CapsPercentage = 85F,
                 AutoModerationEnabled = true
             };
             
