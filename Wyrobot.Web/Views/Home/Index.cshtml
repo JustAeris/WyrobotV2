@@ -1,0 +1,30 @@
+﻿@using DSharpPlus
+@using DSharpPlus.Entities
+@model DiscordRestClient
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">Building Web apps with ASP.NET Core</a>.</p>
+    <img src="@ViewData["userPfp"]"  alt="lol">
+    
+    <label for="guilds">Choose a guild:</label>
+    
+    <div class="btn-group" id="guilds">
+        <button type="button" class="btn btn-lg btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Edit a guild's settings
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu" >
+            @foreach (var item in (List<DiscordGuild>) ViewData["manageableGuilds"])
+            {
+                <a class="dropdown-item" id="dropdown-item" asp-controller="Settings" asp-action="Index" asp-route-userId="@Model.CurrentUser.Id" asp-route-guildId="@item.Id">@item.Name</a>
+            }
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item">You need 'Manage server' permission to be able to change a guild's settings</a>
+        </div>
+    </div>
+
+</div>
