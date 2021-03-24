@@ -37,6 +37,9 @@
       <Compile Update="Commands\LevelRewardsSettingsCommands.cs">
         <DependentUpon>LevelingCommands.cs</DependentUpon>
       </Compile>
+      <Compile Update="Commands\ModerationSettingsCommands.cs">
+        <DependentUpon>ModerationCommands.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
