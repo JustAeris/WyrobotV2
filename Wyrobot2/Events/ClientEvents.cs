@@ -208,8 +208,9 @@ namespace Wyrobot2.Events
             
             
             // ----- AUTO-MODERATION START -----
-            
-            if (!gldData.Moderation.AutoModerationEnabled || gldData.Moderation.ModerationRoles.Intersect(args.Guild.Roles.Keys).Any())
+
+            var bot = await args.Guild.GetMemberAsync(sender.CurrentUser.Id);
+            if (gldData.Moderation.AutoModerationEnabled && !gldData.Moderation.ModerationRoles.Intersect(args.Guild.Roles.Keys).Any() && bot.CanPunish((DiscordMember) args.Author))
             {
                 if (gldData.Moderation.BannedWords.Any(bannedWord => args.Message.Content.Contains(bannedWord)))
                 {
