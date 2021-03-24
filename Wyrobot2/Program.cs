@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Wyrobot2.Commands;
 using Wyrobot2.Data;
 using Wyrobot2.Events;
+using static Wyrobot2.Events.ClientEvents;
 
 namespace Wyrobot2
 {
@@ -37,13 +38,19 @@ namespace Wyrobot2
                 Intents = DiscordIntents.All
             });
 
+            _client.GuildMemberAdded += OnGuildMemberAdded;
+            _client.GuildMemberRemoved += OnGuildMemberRemoved;
+            _client.GuildCreated += OnGuildCreated;
+            _client.GuildDeleted += OnGuildDeleted;
+            _client.GuildBanAdded += OnGuildBanAdded;
+            _client.GuildBanRemoved += OnGuildBanRemoved;
+            _client.MessageCreated += OnMessageCreated;
+
             _client.UseInteractivity(new InteractivityConfiguration
             {
                 PollBehaviour = PollBehaviour.DeleteEmojis,
                 Timeout = TimeSpan.FromSeconds(30)
             });
-            
-            _client.RegisterEvents();
 
             var commands = _client.UseCommandsNext(new CommandsNextConfiguration
             {
