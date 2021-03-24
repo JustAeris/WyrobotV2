@@ -130,6 +130,7 @@ namespace Wyrobot2.Events
                 var gldData = DataManager.GetData(args.Guild);
                 
                 // ----- LEVELING BEGIN -----
+                
                 if (gldData.Leveling.Enabled)
                 {
                     var usrData = DataManager.GetData(args.Author, args.Guild) ?? new UserData
@@ -189,30 +190,70 @@ namespace Wyrobot2.Events
                     
                     DataManager.SaveData(usrData);
                 }
+                
                 // ----- LEVELING END -----
+                
                 
                 // ----- AUTO-MODERATION START -----
                 
-                if (!gldData.Moderation.AutoModerationEnabled) return;
+                if (!gldData.Moderation.AutoModerationEnabled || gldData.Moderation.ModerationRoles.Intersect(args.Guild.Roles.Keys).Any())
+                {
+                    if (gldData.Moderation.BannedWords.Any(bannedWord => args.Message.Content.Contains(bannedWord)))
+                    {
+                        await args.Message.DeleteAsync();
+                        await args.Channel.SendMessageAsync(
+                            $":warning: {args.Author.Mention} Do not use banned words!");
 
-                if (gldData.Moderation.BannedWords.Any(bannedWord => args.Message.Content.Contains(bannedWord)))
-                {
-                    // TODO: punish here
-                    
-                    return;
-                }
-                
-                var capsCount = 0F;
-                foreach (var unused in args.Message.Content.Where(char.IsUpper))
-                    capsCount++;
-                if (capsCount > gldData.Moderation.CapsPercentage)
-                {
-                    // TODO: Punish here
-                    
-                    return;
+                        var usrData = DataManager.GetData(args.Author, args.Guild) ?? new UserData
+                            {Id = args.Author.Id, GuildId = args.Guild.Id};
+                        usrData.Sanctions ??= new List<Sanction>();
+
+                        usrData.Sanctions.Add(new Sanction
+                        {
+                            Type = Sanction.SanctionType.Warn,
+                            PunisherId = sender.CurrentUser.Id,
+                            IssuedAt = DateTimeOffset.Now,
+                            ExpiresAt = DateTimeOffset.Now + TimeSpan.FromDays(1),
+                            Reason = "Banned word usage"
+                        });
+
+                        sender.Logger.LogInformation(EventIds.Warn,
+                            "{Username} has been warned for using banned words in the following message: '{MessageContent}'",
+                            args.Author.Tag(), args.Message.Content);
+
+                        return;
+                    }
+
+                    if (gldData.Moderation.CapsPercentage != 0 && args.Message.Content.Where(char.IsUpper).Count() >
+                        gldData.Moderation.CapsPercentage)
+                    {
+                        await args.Message.DeleteAsync();
+                        await args.Channel.SendMessageAsync($":warning: {args.Author.Mention} Do not spam caps!");
+
+                        var usrData = DataManager.GetData(args.Author, args.Guild) ?? new UserData
+                            {Id = args.Author.Id, GuildId = args.Guild.Id};
+                        usrData.Sanctions ??= new List<Sanction>();
+
+                        usrData.Sanctions.Add(new Sanction
+                        {
+                            Type = Sanction.SanctionType.Warn,
+                            PunisherId = sender.CurrentUser.Id,
+                            IssuedAt = DateTimeOffset.Now,
+                            ExpiresAt = DateTimeOffset.Now + TimeSpan.FromDays(1),
+                            Reason = "Excessive caps usage"
+                        });
+
+                        sender.Logger.LogInformation(EventIds.Warn,
+                            "{Username} has been warned for excessive caps usage in the following message: '{MessageContent}'",
+                            args.Author.Tag(), args.Message.Content);
+
+                        return;
+                    }
                 }
 
                 // ----- AUTO-MODERATION END -----
+                
+                sender.Logger.LogInformation(EventIds.Success, "MessageCreated event successfully handled!");
             };
         }
     }
