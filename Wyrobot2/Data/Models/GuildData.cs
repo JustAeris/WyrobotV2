@@ -9,13 +9,17 @@ namespace Wyrobot2.Data.Models
 
         public string Prefix { get; set; }
 
-        public ulong? IntegrationRoleId { get; set; }
+        public ulong? IntegrationRoleId { get; init; }
         
         public GuildData()
         {
             Prefix = "w!";
-            
-            Moderation = new ModerationSettings();
+
+            Moderation = new ModerationSettings
+            {
+                CapsPercentage = 15F,
+                AutoModerationEnabled = true
+            };
             Welcome = new WelcomeSettings();
             Logging = new LoggingSettings();
             Leveling = new LevelingSettings
@@ -39,11 +43,10 @@ namespace Wyrobot2.Data.Models
         public class ModerationSettings
         {
             public ulong MuteRoleId { get; set; }
-            public ICollection<ulong> ModerationRoles { get; set; }
-            public ICollection<string> BannedWords { get; set; }
+            public IEnumerable<ulong> ModerationRoles { get; set; }
+            public IEnumerable<string> BannedWords { get; set; }
             public float CapsPercentage { get; set; }
             public bool AutoModerationEnabled { get; set; }
-            public bool MuteAfter3Warn { get; set; }
         }
         
         public class WelcomeSettings
