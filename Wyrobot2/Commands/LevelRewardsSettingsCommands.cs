@@ -21,7 +21,7 @@ namespace Wyrobot2.Commands
         [Command("add"), Description("Adds a level reward to this guild.")]
         public async Task Add(CommandContext ctx, [Description("Required level to give the reward.")] int requiredLevel, [Description("Role to award.")] DiscordRole role)
         {
-            var data = DataManager.GetData(ctx.Guild);
+            var data = await DataManager.GetData(ctx.Guild);
             data.Leveling.LevelRewards ??= new List<LevelReward>();
             
             data.Leveling.LevelRewards.Add(new LevelReward(requiredLevel, role.Id));
@@ -39,7 +39,7 @@ namespace Wyrobot2.Commands
         [Command("remove"), Aliases("del"), Description("Removes a level reward from this guild.")]
         public async Task Remove(CommandContext ctx, [Description("Required level of the reward to remove.")] int requiredLevel, [Description("Role of the reward to remove.")] DiscordRole role)
         {
-            var data = DataManager.GetData(ctx.Guild);
+            var data = await DataManager.GetData(ctx.Guild);
             data.Leveling.LevelRewards ??= new List<LevelReward>();
             
             data.Leveling.LevelRewards.Add(new LevelReward(requiredLevel, role.Id));
@@ -58,7 +58,7 @@ namespace Wyrobot2.Commands
         [Command("list"), Description("Lists all available level rewards for this guild.")]
         public async Task List(CommandContext ctx)
         {
-            var dataList = DataManager.GetData(ctx.Guild).Leveling.LevelRewards.OrderBy(lr => lr.RequiredLevel).ToList();
+            var dataList = (await DataManager.GetData(ctx.Guild)).Leveling.LevelRewards.OrderBy(lr => lr.RequiredLevel).ToList();
             
             if (!dataList.Any())
             {

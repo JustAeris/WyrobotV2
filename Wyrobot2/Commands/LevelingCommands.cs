@@ -19,12 +19,12 @@ namespace Wyrobot2.Commands
         [Command("rank"), Aliases("level"), Description("Show your, or another user's, level stats.")]
         public async Task Rank(CommandContext ctx, [Description("Discord User to show the stats of.")] DiscordMember mbr = null)
         {
-            if (!DataManager.GetData(ctx.Guild).Leveling.Enabled)
+            if (!(await DataManager.GetData(ctx.Guild)).Leveling.Enabled)
             {
                 await ctx.RespondAsync(":x: Leveling is not enabled on this server");
             }
             
-            var usrData = DataManager.GetData(mbr ?? ctx.Member, ctx.Guild);
+            var usrData = await DataManager.GetData(mbr ?? ctx.Member, ctx.Guild);
 
             if (usrData == null)
             {
@@ -45,7 +45,7 @@ namespace Wyrobot2.Commands
         [Command("leaderboard"), Aliases("lb"), Description("Show the current leaderboard for this server.")]
         public async Task Leaderboard(CommandContext ctx)
         {
-            if (!DataManager.GetData(ctx.Guild).Leveling.Enabled)
+            if (!(await DataManager.GetData(ctx.Guild)).Leveling.Enabled)
             {
                 await ctx.RespondAsync(":x: Leveling is not enabled on this server");
             }

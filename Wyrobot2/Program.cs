@@ -102,15 +102,15 @@ namespace Wyrobot2
             await Task.Delay(-1);
         }
         
-        private static Task<int> ResolvePrefixAsync(DiscordMessage msg)
+        private static async Task<int> ResolvePrefixAsync(DiscordMessage msg)
         {
             var gld = msg.Channel.Guild;
             if (gld == null)
-                return Task.FromResult(-1);
+                return await Task.FromResult(-1);
 
-            var data = DataManager.GetData(gld);
+            var data = await DataManager.GetData(gld);
 
-            return msg.Content.StartsWith(data.Prefix, StringComparison.InvariantCultureIgnoreCase) ? Task.FromResult(data.Prefix.Length) : Task.FromResult(-1);
+            return await (msg.Content.StartsWith(data.Prefix, StringComparison.InvariantCultureIgnoreCase) ? Task.FromResult(data.Prefix.Length) : Task.FromResult(-1));
         }
     }
 }

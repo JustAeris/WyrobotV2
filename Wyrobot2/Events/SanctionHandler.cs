@@ -38,7 +38,7 @@ namespace Wyrobot2.Events
             foreach (var guild in _client.Guilds.Values)
             {
                 var userDataList = DataManager.GetAllData(guild);
-                var guildData = DataManager.GetData(guild);
+                var guildData = await DataManager.GetData(guild);
 
                 foreach (var data in userDataList)
                 {

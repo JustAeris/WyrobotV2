@@ -52,7 +52,7 @@ namespace Wyrobot2.Commands
                 return;
             }
 
-            var usrData = DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
+            var usrData = await DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
             usrData.Sanctions ??= new List<Sanction>();
             
             usrData.Sanctions.Add(new Sanction
@@ -209,7 +209,7 @@ namespace Wyrobot2.Commands
                 return;
             }
             
-            var usrData = DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
+            var usrData = await DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
             usrData.Sanctions ??= new List<Sanction>();
             
             usrData.Sanctions.Add(new Sanction
@@ -273,7 +273,7 @@ namespace Wyrobot2.Commands
                 return;
             }
             
-            var usrData = DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
+            var usrData = await DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
             usrData.Sanctions ??= new List<Sanction>();
 
             if (usrData.Sanctions.Any(s => s.Type == Sanction.SanctionType.Mute && !s.HasExpired))
@@ -300,7 +300,7 @@ namespace Wyrobot2.Commands
 
             try
             {
-                var gldData = DataManager.GetData(ctx.Guild);
+                var gldData = await DataManager.GetData(ctx.Guild);
                 await member.GrantRoleAsync(ctx.Guild.GetRole(gldData.Moderation.MuteRoleId), $"'{ctx.Member.Username}#{ctx.Member.Discriminator}' muted '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
                 await member.SendMessageAsync("You have been " +
                                               $"{(expiresIn == TimeSpan.MaxValue ? "permanently muted" : $"muted for {(expiresIn > TimeSpan.FromDays(1) ? $"{expiresIn.TotalDays} days" : $"{expiresIn.TotalHours} hours")}")} " +
@@ -368,7 +368,7 @@ namespace Wyrobot2.Commands
                 return;
             }
             
-            var usrData = DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
+            var usrData = await DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
             usrData.Sanctions ??= new List<Sanction>();
 
             if (!usrData.Sanctions.Any(s => s.Type != Sanction.SanctionType.Mute && !s.HasExpired))
@@ -386,7 +386,7 @@ namespace Wyrobot2.Commands
 
             try
             {
-                var gldData = DataManager.GetData(ctx.Guild);
+                var gldData = await DataManager.GetData(ctx.Guild);
                 await member.RevokeRoleAsync(ctx.Guild.GetRole(gldData.Moderation.MuteRoleId), $"'{ctx.Member.Username}#{ctx.Member.Discriminator}' muted '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
                 await member.SendMessageAsync($"You have been un-muted from **{ctx.Guild.Name}** for the following reason: ```{reason}```"); }
             catch (Exception e)
@@ -425,7 +425,7 @@ namespace Wyrobot2.Commands
         {
             await ctx.TriggerTypingAsync();
             
-            var data = DataManager.GetData(mbr ?? ctx.Member, ctx.Guild);
+            var data = await DataManager.GetData(mbr ?? ctx.Member, ctx.Guild);
 
             var dataList = data.Sanctions.OrderBy(s => s.Type).ToList();
             

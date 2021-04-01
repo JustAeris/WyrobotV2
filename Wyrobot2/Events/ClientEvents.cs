@@ -53,7 +53,7 @@ namespace Wyrobot2.Events
 
         public static Task OnGuildDeleted(DiscordClient sender, GuildDeleteEventArgs args)
         {
-            DataManager.DeleteData(args.Guild);
+            DataManager.DeleteData<GuildData>(args.Guild.Id);
             return Task.CompletedTask;
         }
 
@@ -65,7 +65,7 @@ namespace Wyrobot2.Events
             var responsible = sanction.UserResponsible;
             var reason = sanction.Reason ?? "No reason provided.";
                 
-            var usrData = DataManager.GetData(args.Member, args.Guild) ?? new UserData{ Id = args.Member.Id, GuildId = args.Guild.Id };
+            var usrData = await DataManager.GetData(args.Member, args.Guild) ?? new UserData{ Id = args.Member.Id, GuildId = args.Guild.Id };
             usrData.Sanctions ??= new List<Sanction>();
                 
             usrData.Sanctions.Add(new Sanction
@@ -84,7 +84,7 @@ namespace Wyrobot2.Events
 
         public static async Task OnGuildBanRemoved(DiscordClient sender, GuildBanRemoveEventArgs args)
         {
-            var data = DataManager.GetData(args.Member, args.Guild);
+            var data = await DataManager.GetData(args.Member, args.Guild);
             var lastBan = data.Sanctions.LastOrDefault(s => s.Type == Sanction.SanctionType.Ban);
             if (lastBan != null)
             {
@@ -100,7 +100,7 @@ namespace Wyrobot2.Events
 
         public static async Task OnGuildMemberAdded(DiscordClient sender, GuildMemberAddEventArgs args)
         {
-            var gldData = DataManager.GetData(args.Guild);
+            var gldData = await DataManager.GetData(args.Guild);
             if (!gldData.Welcome.Enabled || gldData.Welcome.Message == null || gldData.Welcome.ChannelId == 0) return;
             var channel = args.Guild.GetChannel(gldData.Welcome.ChannelId);
             if (channel == null)
@@ -120,7 +120,7 @@ namespace Wyrobot2.Events
             var responsible = sanction.UserResponsible;
             var reason = sanction.Reason ?? "No reason provided.";
                 
-            var usrData = DataManager.GetData(args.Member, args.Guild) ?? new UserData{ Id = args.Member.Id, GuildId = args.Guild.Id };
+            var usrData = await DataManager.GetData(args.Member, args.Guild) ?? new UserData{ Id = args.Member.Id, GuildId = args.Guild.Id };
             usrData.Sanctions ??= new List<Sanction>();
                 
             usrData.Sanctions.Add(new Sanction
@@ -143,14 +143,14 @@ namespace Wyrobot2.Events
 
             _ = Task.Run(async () =>
             {
-                var gldData = DataManager.GetData(args.Guild);
+                var gldData = await DataManager.GetData(args.Guild);
             
             // ----- LEVELING -----
             #region LEVELING
 
             if (gldData.Leveling.Enabled)
             {
-                var usrData = DataManager.GetData(args.Author, args.Guild) ?? new UserData
+                var usrData = await DataManager.GetData(args.Author, args.Guild) ?? new UserData
                 {
                     Id = args.Author.Id,
                     GuildId = args.Guild.Id
@@ -224,7 +224,7 @@ namespace Wyrobot2.Events
                     await args.Channel.SendMessageAsync(
                         $":warning: {args.Author.Mention} Do not use banned words!");
 
-                    var usrData = DataManager.GetData(args.Author, args.Guild) ?? new UserData
+                    var usrData = await DataManager.GetData(args.Author, args.Guild) ?? new UserData
                         {Id = args.Author.Id, GuildId = args.Guild.Id};
                     usrData.Sanctions ??= new List<Sanction>();
 
@@ -250,7 +250,7 @@ namespace Wyrobot2.Events
                     await args.Message.DeleteAsync();
                     await args.Channel.SendMessageAsync($":warning: {args.Author.Mention} Do not spam caps!");
 
-                    var usrData = DataManager.GetData(args.Author, args.Guild) ?? new UserData
+                    var usrData = await DataManager.GetData(args.Author, args.Guild) ?? new UserData
                         {Id = args.Author.Id, GuildId = args.Guild.Id};
                     usrData.Sanctions ??= new List<Sanction>();
 

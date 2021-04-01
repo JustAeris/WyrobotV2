@@ -21,7 +21,7 @@ namespace Wyrobot2.Commands
         [Command("automod"), Description("Enable / Disable the auto-moderator. This will not affect existing data."), RequireUserPermissions(Permissions.Administrator)]
         public async Task AutoMod(CommandContext ctx, [Description("Whether to enabled or disable leveling.")] bool value)
         {
-            var data = DataManager.GetData(ctx.Guild);
+            var data = await DataManager.GetData(ctx.Guild);
             var oldValue = data.Moderation.AutoModerationEnabled;
             data.Moderation.AutoModerationEnabled = value;
             DataManager.SaveData(data);
@@ -37,7 +37,7 @@ namespace Wyrobot2.Commands
         [Command("capspercentage"), Description("Changes the minium percentage of caps in a massge for the user to be warned."), RequireUserPermissions(Permissions.Administrator)]
         public async Task CapsPercentage(CommandContext ctx, [Description("This value accept deciamls.")] float value)
         {
-            var data = DataManager.GetData(ctx.Guild);
+            var data = await DataManager.GetData(ctx.Guild);
             var oldValue = data.Moderation.CapsPercentage;
             data.Moderation.CapsPercentage = value;
             DataManager.SaveData(data);
@@ -53,7 +53,7 @@ namespace Wyrobot2.Commands
         [Command("bannedwords"), Description("Sets the list of banned words. Sending a message containing one will lead to a message deletion and a warn.")]
         public async Task BannedWords(CommandContext ctx, [RemainingText, Description("Use spaces as separators.")] string value)
         {
-            var data = DataManager.GetData(ctx.Guild);
+            var data = await DataManager.GetData(ctx.Guild);
             var oldValue = data.Moderation.BannedWords;
             data.Moderation.BannedWords = value.Split(" ");
             DataManager.SaveData(data);
@@ -69,7 +69,7 @@ namespace Wyrobot2.Commands
         [Command("modroles"), Description("Sets a list of moderation roles, These roles will be immune against the auto-moderator.")]
         public async Task ModerationRoles(CommandContext ctx, [Description("Mention one or multiple roles.")] params DiscordRole[] value)
         {
-            var data = DataManager.GetData(ctx.Guild);
+            var data = await DataManager.GetData(ctx.Guild);
             var oldValue = data.Moderation.ModerationRoles;
             data.Moderation.ModerationRoles = value.Select(r => r.Id);
             DataManager.SaveData(data);
