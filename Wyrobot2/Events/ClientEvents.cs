@@ -137,13 +137,17 @@ namespace Wyrobot2.Events
             sender.Logger.LogInformation(EventIds.Kick ,"'{RUsername}#{RDiscriminator}' kicked '{PUsername}#{PDiscriminator}' for the following reason: {Reason}", responsible.Username, responsible.Discriminator, args.Member.Username, args.Member.Discriminator, reason);
         }
 
-        public static async Task OnMessageCreated(DiscordClient sender, MessageCreateEventArgs args)
+        public static Task OnMessageCreated(DiscordClient sender, MessageCreateEventArgs args)
         {
-            if (args.Author.IsBot) return;
-            var gldData = DataManager.GetData(args.Guild);
+            if (args.Author.IsBot) return Task.CompletedTask;
+
+            _ = Task.Run(async () =>
+            {
+                var gldData = DataManager.GetData(args.Guild);
             
-            // ----- LEVELING BEGIN -----
-            
+            // ----- LEVELING -----
+            #region LEVELING
+
             if (gldData.Leveling.Enabled)
             {
                 var usrData = DataManager.GetData(args.Author, args.Guild) ?? new UserData
@@ -203,16 +207,18 @@ namespace Wyrobot2.Events
                 
                 DataManager.SaveData(usrData);
             }
+
+            #endregion
             
-            // ----- LEVELING END -----
             
-            
-            // ----- AUTO-MODERATION START -----
+            // ----- AUTO-MODERATION -----
+            #region AUTO-MODERATION
 
             var bot = await args.Guild.GetMemberAsync(sender.CurrentUser.Id);
-            if (gldData.Moderation.AutoModerationEnabled && !gldData.Moderation.ModerationRoles.Intersect(args.Guild.Roles.Keys).Any() && bot.CanPunish((DiscordMember) args.Author))
+            var anyModRoles = gldData.Moderation.ModerationRoles.Intersect(((DiscordMember) args.Author).Roles.Select(r => r.Id));
+            if (gldData.Moderation.AutoModerationEnabled && !anyModRoles.Any() && bot.CanPunish((DiscordMember) args.Author))
             {
-                if (gldData.Moderation.BannedWords.Any(bannedWord => args.Message.Content.Contains(bannedWord)))
+                if (gldData.Moderation.BannedWords.Any(bannedWord => args.Message.Content.Contains(bannedWord, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     await args.Message.DeleteAsync();
                     await args.Channel.SendMessageAsync(
@@ -263,9 +269,13 @@ namespace Wyrobot2.Events
 
                     return;
                 }
-            }
+            }            
 
-            // ----- AUTO-MODERATION END -----
+            #endregion
+            
+            });
+            
+            return Task.CompletedTask;
         }
     }
 }
