@@ -134,6 +134,7 @@ namespace Wyrobot2.Commands
                 return;
             }
             
+            /* Commenting this to prevent two entries from being added since the event already handles this.
             var usrData = DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
             usrData.Sanctions ??= new List<Sanction>();
             
@@ -144,7 +145,7 @@ namespace Wyrobot2.Commands
                 IssuedAt = DateTimeOffset.Now,
                 ExpiresAt = DateTimeOffset.Now,
                 Reason = reason
-            });
+            });*/
 
             try
             {
@@ -165,7 +166,7 @@ namespace Wyrobot2.Commands
                     .Build());
             }
             
-            DataManager.SaveData(usrData);
+            //DataManager.SaveData(usrData);
             ctx.Client.Logger.LogInformation(EventIds.Kick, "'{PunisherName}#{PunisherDiscriminator}' kicked '{SanctionedName}#{SanctionedDiscriminator}' for the following reason: {Reason}", ctx.Member.Username, ctx.Member.Discriminator, member.Username, member.Discriminator, reason);
             
             await ctx.RespondAsync(new DiscordEmbedBuilder()
