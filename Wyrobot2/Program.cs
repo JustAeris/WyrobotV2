@@ -7,6 +7,8 @@ using DSharpPlus.Entities;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Enums;
 using DSharpPlus.Interactivity.Extensions;
+using DSharpPlus.Lavalink;
+using DSharpPlus.Net;
 using Microsoft.Extensions.Logging;
 using Wyrobot2.Commands;
 using Wyrobot2.Data;
@@ -28,7 +30,7 @@ namespace Wyrobot2
         {
             _client = new DiscordClient(new DiscordConfiguration
             {
-                Token = Configuration.DUseProduction ? Configuration.DProduction : Configuration.DDevelopment,
+                Token = Configuration.Discord.UseProduction ? Configuration.Discord.Production : Configuration.Discord.Development,
                 TokenType = TokenType.Bot,
                 #if DEBUG
                 MinimumLogLevel = LogLevel.Debug,
@@ -72,6 +74,21 @@ namespace Wyrobot2
             commands.RegisterCommands<ModerationSettingsCommands>();
             commands.RegisterCommands<WelcomeSettingsCommands>();
             
+            var endpoint = new ConnectionEndpoint
+            {
+                Hostname = Configuration.Lavalink.Host,
+                Port = Configuration.Lavalink.Port
+            };
+
+            var lavalinkConfig = new LavalinkConfiguration
+            {
+                Password = Configuration.Lavalink.Password,
+                RestEndpoint = endpoint,
+                SocketEndpoint = endpoint
+            };
+            
+            var lavalink = _client.UseLavalink();
+            
             SanctionHandler.InitializeAndStart(_client);
             
             await _client.ConnectAsync(new DiscordActivity
@@ -79,6 +96,8 @@ namespace Wyrobot2
                 Name = "with code",
                 ActivityType = ActivityType.Playing
             });
+            
+            await lavalink.ConnectAsync(lavalinkConfig);
 
             await Task.Delay(-1);
         }
