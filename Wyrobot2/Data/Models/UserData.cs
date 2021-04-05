@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace Wyrobot2.Data.Models
 {
-    public class UserData : IDataManager
+    public class UserData
     {
         public UserData()
         {
@@ -19,10 +18,5 @@ namespace Wyrobot2.Data.Models
         public int XpToNextLevel => Level * 100 + 75;
 
         public ICollection<Sanction> Sanctions { get; set; }
-        
-        [JsonIgnore]
-        public string Folder => $"guilds/{GuildId}/users";
-        [JsonIgnore]
-        public string Identifier => Id.ToString();
     }
 }

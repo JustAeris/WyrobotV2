@@ -2,23 +2,16 @@
 
 namespace Wyrobot2.Data.Models
 {
-    public class MusicData : IDataManager
+    public class MusicData
     {
         public ulong GuildId { get; set; }
 
-        public LoopMode RepeatMode { get; set; }
+        public bool DjEnabled { get; set; }
+
+        public ulong DjRoleId { get; set; }
+
+        public bool IsLooping { get; set; }
 
         public Queue<MusicTrack> Tracks { get; set; }
-        
-        public string Folder => $"guilds/{GuildId}";
-        public string Identifier => "music";
-        
-        public enum LoopMode
-        {
-            None,
-            Repeat,
-            SingleRepeat,
-            Shuffle
-        }
     }
 }
