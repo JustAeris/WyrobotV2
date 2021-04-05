@@ -16,8 +16,11 @@ namespace Wyrobot2.Data
 
         public static UserData GetUserData(ulong guildId, ulong userId) =>
             GetGuildData(guildId).UsersList.FirstOrDefault(ud => ud.Id == userId);
+        
+        public static MusicData GetMusicData(ulong guildId) =>
+            GetGuildData(guildId).MusicData;
 
-        public static void SaveGuildData(GuildData data)
+        public static void SaveGuildData(this GuildData data)
         {
             var path = $"guilds/{data.Id}.json";
 
@@ -34,7 +37,7 @@ namespace Wyrobot2.Data
             fs.Dispose();
         }
 
-        public static void SaveUserData(UserData data)
+        public static void SaveUserData(this UserData data)
         {
             var gldData = GetGuildData(data.GuildId);
 
@@ -49,6 +52,15 @@ namespace Wyrobot2.Data
                 gldData.UsersList.Remove(usrData);
                 gldData.UsersList.Add(data);
             }
+            
+            SaveGuildData(gldData);
+        }
+        
+        public static void SaveMusicData(this MusicData data)
+        {
+            var gldData = GetGuildData(data.GuildId);
+
+            gldData.MusicData = data;
             
             SaveGuildData(gldData);
         }
