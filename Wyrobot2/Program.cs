@@ -73,6 +73,7 @@ namespace Wyrobot2
             commands.RegisterCommands<ModerationCommands>();
             commands.RegisterCommands<ModerationSettingsCommands>();
             commands.RegisterCommands<WelcomeSettingsCommands>();
+            commands.RegisterCommands<MusicCommands>();
             
             var endpoint = new ConnectionEndpoint
             {
@@ -102,15 +103,15 @@ namespace Wyrobot2
             await Task.Delay(-1);
         }
         
-        private static async Task<int> ResolvePrefixAsync(DiscordMessage msg)
+        private static Task<int> ResolvePrefixAsync(DiscordMessage msg)
         {
             var gld = msg.Channel.Guild;
             if (gld == null)
-                return await Task.FromResult(-1);
+                return Task.FromResult(-1);
 
-            var data = await DataManager.GetData(gld);
+            var prefix = DataContext.GetGuildData(gld.Id).Prefix;
 
-            return await (msg.Content.StartsWith(data.Prefix, StringComparison.InvariantCultureIgnoreCase) ? Task.FromResult(data.Prefix.Length) : Task.FromResult(-1));
+            return msg.Content.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase) ? Task.FromResult(prefix.Length) : Task.FromResult(-1);
         }
     }
 }

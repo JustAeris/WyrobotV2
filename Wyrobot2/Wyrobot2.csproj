@@ -40,6 +40,13 @@
       <Compile Update="Commands\ModerationSettingsCommands.cs">
         <DependentUpon>ModerationCommands.cs</DependentUpon>
       </Compile>
+      <Compile Remove="Lavalink\logs\**" />
+      <Compile Update="Data\Models\MusicData.cs">
+        <DependentUpon>GuildData.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Data\Models\UserData.cs">
+        <DependentUpon>GuildData.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
@@ -47,6 +54,11 @@
       <Content Include="appsettings.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+      <None Remove="Lavalink\logs\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Lavalink\logs\**" />
     </ItemGroup>
 
 </Project>

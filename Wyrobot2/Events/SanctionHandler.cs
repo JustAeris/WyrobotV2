@@ -37,8 +37,8 @@ namespace Wyrobot2.Events
             
             foreach (var guild in _client.Guilds.Values)
             {
-                var userDataList = DataManager.GetAllData(guild);
-                var guildData = await DataManager.GetData(guild);
+                var guildData = DataContext.GetGuildData(guild.Id);
+                var userDataList = guildData.UsersList;
 
                 foreach (var data in userDataList)
                 {
@@ -115,7 +115,7 @@ namespace Wyrobot2.Events
                                 throw new ArgumentOutOfRangeException();
                         }
                     }
-                    DataManager.SaveData(data);
+                    DataContext.SaveUserData(data);
                 }
             }
             

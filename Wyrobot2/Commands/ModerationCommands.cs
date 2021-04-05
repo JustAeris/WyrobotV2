@@ -52,7 +52,7 @@ namespace Wyrobot2.Commands
                 return;
             }
 
-            var usrData = await DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
+            var usrData = DataContext.GetUserData(ctx.Guild.Id, member.Id) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
             usrData.Sanctions ??= new List<Sanction>();
             
             usrData.Sanctions.Add(new Sanction
@@ -85,7 +85,7 @@ namespace Wyrobot2.Commands
                     .Build());
             }
             
-            DataManager.SaveData(usrData);
+            DataContext.SaveUserData(usrData);
             ctx.Client.Logger.LogInformation(EventIds.Ban , "'{PunisherName}#{PunisherDiscriminator}' banned '{SanctionedName}#{SanctionedDiscriminator}' for the following reason: {Reason}", ctx.Member.Username, ctx.Member.Discriminator, member.Username, member.Discriminator, reason);
             
             await ctx.RespondAsync(new DiscordEmbedBuilder()
@@ -209,7 +209,7 @@ namespace Wyrobot2.Commands
                 return;
             }
             
-            var usrData = await DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
+            var usrData = DataContext.GetUserData(ctx.Guild.Id, member.Id) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
             usrData.Sanctions ??= new List<Sanction>();
             
             usrData.Sanctions.Add(new Sanction
@@ -230,7 +230,7 @@ namespace Wyrobot2.Commands
                 // ignored
             }
             
-            DataManager.SaveData(usrData);
+            DataContext.SaveUserData(usrData);
             ctx.Client.Logger.LogInformation(EventIds.Warn, "'{PunisherName}#{PunisherDiscriminator}' warned '{SanctionedName}#{SanctionedDiscriminator}' for the following reason: {Reason}", ctx.Member.Username, ctx.Member.Discriminator, member.Username, member.Discriminator, reason);
             
             await ctx.RespondAsync(new DiscordEmbedBuilder()
@@ -273,7 +273,7 @@ namespace Wyrobot2.Commands
                 return;
             }
             
-            var usrData = await DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
+            var usrData = DataContext.GetUserData(ctx.Guild.Id, member.Id) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
             usrData.Sanctions ??= new List<Sanction>();
 
             if (usrData.Sanctions.Any(s => s.Type == Sanction.SanctionType.Mute && !s.HasExpired))
@@ -300,7 +300,7 @@ namespace Wyrobot2.Commands
 
             try
             {
-                var gldData = await DataManager.GetData(ctx.Guild);
+                var gldData = DataContext.GetGuildData(ctx.Guild.Id);
                 await member.GrantRoleAsync(ctx.Guild.GetRole(gldData.Moderation.MuteRoleId), $"'{ctx.Member.Username}#{ctx.Member.Discriminator}' muted '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
                 await member.SendMessageAsync("You have been " +
                                               $"{(expiresIn == TimeSpan.MaxValue ? "permanently muted" : $"muted for {(expiresIn > TimeSpan.FromDays(1) ? $"{expiresIn.TotalDays} days" : $"{expiresIn.TotalHours} hours")}")} " +
@@ -319,7 +319,7 @@ namespace Wyrobot2.Commands
                     .Build());
             }
             
-            DataManager.SaveData(usrData);
+            DataContext.SaveUserData(usrData);
             ctx.Client.Logger.LogInformation(EventIds.Mute, "'{PunisherName}#{PunisherDiscriminator}' muted '{SanctionedName}#{SanctionedDiscriminator}' for the following reason: {Reason}", ctx.Member.Username, ctx.Member.Discriminator, member.Username, member.Discriminator, reason);
             
             await ctx.RespondAsync(new DiscordEmbedBuilder()
@@ -368,7 +368,7 @@ namespace Wyrobot2.Commands
                 return;
             }
             
-            var usrData = await DataManager.GetData(member, ctx.Guild) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
+            var usrData = DataContext.GetUserData(ctx.Guild.Id, member.Id) ?? new UserData{ Id = member.Id, GuildId = ctx.Guild.Id };
             usrData.Sanctions ??= new List<Sanction>();
 
             if (!usrData.Sanctions.Any(s => s.Type != Sanction.SanctionType.Mute && !s.HasExpired))
@@ -386,7 +386,7 @@ namespace Wyrobot2.Commands
 
             try
             {
-                var gldData = await DataManager.GetData(ctx.Guild);
+                var gldData = DataContext.GetGuildData(ctx.Guild.Id);
                 await member.RevokeRoleAsync(ctx.Guild.GetRole(gldData.Moderation.MuteRoleId), $"'{ctx.Member.Username}#{ctx.Member.Discriminator}' muted '{member.Username}#{member.Discriminator}' for the following reason: {reason}.");
                 await member.SendMessageAsync($"You have been un-muted from **{ctx.Guild.Name}** for the following reason: ```{reason}```"); }
             catch (Exception e)
@@ -406,7 +406,7 @@ namespace Wyrobot2.Commands
             var lastMute = usrData.Sanctions.Last(s => s.Type == Sanction.SanctionType.Mute);
             lastMute.ExpiresAt = DateTimeOffset.Now;
             
-            DataManager.SaveData(usrData);
+            DataContext.SaveUserData(usrData);
 
             ctx.Client.Logger.LogInformation(EventIds.Unmute, "'{PunisherName}#{PunisherDiscriminator}' un-muted '{SanctionedName}#{SanctionedDiscriminator}' for the following reason: {Reason}", ctx.Member.Username, ctx.Member.Discriminator, member.Username, member.Discriminator, reason);
             
@@ -425,7 +425,7 @@ namespace Wyrobot2.Commands
         {
             await ctx.TriggerTypingAsync();
             
-            var data = await DataManager.GetData(mbr ?? ctx.Member, ctx.Guild);
+            var data = DataContext.GetUserData(ctx.Guild.Id, mbr == null ? ctx.Member.Id : mbr.Id);
 
             var dataList = data.Sanctions.OrderBy(s => s.Type).ToList();
             

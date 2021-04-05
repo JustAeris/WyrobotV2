@@ -21,12 +21,12 @@ namespace Wyrobot2.Commands
         [Command("add"), Description("Adds a level reward to this guild.")]
         public async Task Add(CommandContext ctx, [Description("Required level to give the reward.")] int requiredLevel, [Description("Role to award.")] DiscordRole role)
         {
-            var data = await DataManager.GetData(ctx.Guild);
+            var data = DataContext.GetGuildData(ctx.Guild.Id);
             data.Leveling.LevelRewards ??= new List<LevelReward>();
             
             data.Leveling.LevelRewards.Add(new LevelReward(requiredLevel, role.Id));
             
-            DataManager.SaveData(data);
+            DataContext.SaveGuildData(data);
             
             await ctx.RespondAsync(new DiscordEmbedBuilder()
                 .WithTitle(":white_check_mark: Success!")
@@ -39,12 +39,12 @@ namespace Wyrobot2.Commands
         [Command("remove"), Aliases("del"), Description("Removes a level reward from this guild.")]
         public async Task Remove(CommandContext ctx, [Description("Required level of the reward to remove.")] int requiredLevel, [Description("Role of the reward to remove.")] DiscordRole role)
         {
-            var data = await DataManager.GetData(ctx.Guild);
+            var data = DataContext.GetGuildData(ctx.Guild.Id);
             data.Leveling.LevelRewards ??= new List<LevelReward>();
             
             data.Leveling.LevelRewards.Add(new LevelReward(requiredLevel, role.Id));
             
-            DataManager.SaveData(data);
+            DataContext.SaveGuildData(data);
             
             await ctx.RespondAsync(new DiscordEmbedBuilder()
                 .WithTitle(":white_check_mark: Success!")
@@ -58,7 +58,7 @@ namespace Wyrobot2.Commands
         [Command("list"), Description("Lists all available level rewards for this guild.")]
         public async Task List(CommandContext ctx)
         {
-            var dataList = (await DataManager.GetData(ctx.Guild)).Leveling.LevelRewards.OrderBy(lr => lr.RequiredLevel).ToList();
+            var dataList = (DataContext.GetGuildData(ctx.Guild.Id)).Leveling.LevelRewards.OrderBy(lr => lr.RequiredLevel).ToList();
             
             if (!dataList.Any())
             {

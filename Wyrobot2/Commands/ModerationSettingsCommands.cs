@@ -21,10 +21,10 @@ namespace Wyrobot2.Commands
         [Command("automod"), Description("Enable / Disable the auto-moderator. This will not affect existing data."), RequireUserPermissions(Permissions.Administrator)]
         public async Task AutoMod(CommandContext ctx, [Description("Whether to enabled or disable leveling.")] bool value)
         {
-            var data = await DataManager.GetData(ctx.Guild);
+            var data = DataContext.GetGuildData(ctx.Guild.Id);
             var oldValue = data.Moderation.AutoModerationEnabled;
             data.Moderation.AutoModerationEnabled = value;
-            DataManager.SaveData(data);
+            DataContext.SaveGuildData(data);
             await ctx.RespondAsync(new DiscordEmbedBuilder()
                 .WithTitle(":white_check_mark: Success!")
                 .WithDescription($"The auto-moderation has been turned from **{oldValue}** to **{value}**")
@@ -37,10 +37,10 @@ namespace Wyrobot2.Commands
         [Command("capspercentage"), Description("Changes the minium percentage of caps in a massge for the user to be warned."), RequireUserPermissions(Permissions.Administrator)]
         public async Task CapsPercentage(CommandContext ctx, [Description("This value accept deciamls.")] float value)
         {
-            var data = await DataManager.GetData(ctx.Guild);
+            var data = DataContext.GetGuildData(ctx.Guild.Id);
             var oldValue = data.Moderation.CapsPercentage;
             data.Moderation.CapsPercentage = value;
-            DataManager.SaveData(data);
+            DataContext.SaveGuildData(data);
             await ctx.RespondAsync(new DiscordEmbedBuilder()
                 .WithTitle(":white_check_mark: Success!")
                 .WithDescription($"The caps percentage has been changed from **{oldValue}** to **{value}**")
@@ -53,10 +53,10 @@ namespace Wyrobot2.Commands
         [Command("bannedwords"), Description("Sets the list of banned words. Sending a message containing one will lead to a message deletion and a warn.")]
         public async Task BannedWords(CommandContext ctx, [RemainingText, Description("Use spaces as separators.")] string value)
         {
-            var data = await DataManager.GetData(ctx.Guild);
+            var data = DataContext.GetGuildData(ctx.Guild.Id);
             var oldValue = data.Moderation.BannedWords;
             data.Moderation.BannedWords = value.Split(" ");
-            DataManager.SaveData(data);
+            DataContext.SaveGuildData(data);
             await ctx.RespondAsync(new DiscordEmbedBuilder()
                 .WithTitle(":white_check_mark: Success!")
                 .WithDescription($"The banned words have changed from **||{string.Join(" ", oldValue)}||** to **||{value}||**")
@@ -69,10 +69,10 @@ namespace Wyrobot2.Commands
         [Command("modroles"), Description("Sets a list of moderation roles, These roles will be immune against the auto-moderator.")]
         public async Task ModerationRoles(CommandContext ctx, [Description("Mention one or multiple roles.")] params DiscordRole[] value)
         {
-            var data = await DataManager.GetData(ctx.Guild);
+            var data = DataContext.GetGuildData(ctx.Guild.Id);
             var oldValue = data.Moderation.ModerationRoles;
             data.Moderation.ModerationRoles = value.Select(r => r.Id);
-            DataManager.SaveData(data);
+            DataContext.SaveGuildData(data);
 
             var list = new List<DiscordRole>(data.Moderation.ModerationRoles.Count());
             foreach (var r in oldValue)
@@ -83,7 +83,7 @@ namespace Wyrobot2.Commands
                 }
                 catch (Exception e)
                 {
-                    ctx.Client.Logger.LogWarning(EventIds.Warning, e, "Could not get moderation of ID '{RId}' in guild '{GName}' ({GId})", r, ctx.Guild.Name, ctx.Guild.Id);
+                    ctx.Client.Logger.LogWarning(EventIds.Warning, e, "Could not get moderation role of ID '{RId}' in guild '{GName}' ({GId})", r, ctx.Guild.Name, ctx.Guild.Id);
                 }
             }
             

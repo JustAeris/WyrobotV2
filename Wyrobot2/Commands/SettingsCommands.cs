@@ -13,9 +13,9 @@ namespace Wyrobot2.Commands
         [Command("changeprefix"), RequireUserPermissions(Permissions.Administrator)]
         public async Task ChangePrefix(CommandContext ctx, string prefix)
         {
-            var data = await DataManager.GetData(ctx.Guild);
+            var data = DataContext.GetGuildData(ctx.Guild.Id);
             data.Prefix = prefix;
-            DataManager.SaveData(data);
+            DataContext.SaveGuildData(data);
             await ctx.RespondAsync(":ok:");
         }
     }
