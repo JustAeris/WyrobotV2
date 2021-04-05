@@ -5,6 +5,8 @@ namespace Wyrobot2.Data.Models
     public class MusicData
     {
         public ulong GuildId { get; set; }
+        
+        public ulong LastChannelId { get; set; }
 
         public bool DjEnabled { get; set; }
 
